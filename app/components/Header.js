@@ -1,3 +1,4 @@
+"use client";
 import { useState, useEffect } from "react";
 import { UserAuth } from "../context/AuthContext";
 import { Nunito, Alegreya } from 'next/font/google';
