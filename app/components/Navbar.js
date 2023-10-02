@@ -57,7 +57,7 @@ export default function Navbar() {
             :
                 (<div className="flex items-center justify-end gap-4">
                     <div className="px-2">{user.displayName}</div>
-                    <Link href="/donate" className="py-1 px-2 rounded-md hover:bg-red-400 hover:text-white"> Donate </Link>
+                    <Link href="/donate" className="py-1 px-2 rounded-md hover:bg-red-400 hover:text-white">Donate</Link>
                     <button onClick={handleSignOut} className="py-1 px-2 rounded-md hover:text-red-400 hover:border-red-400 hover:border">Sign Out</button>
                 </div>) 
             }
