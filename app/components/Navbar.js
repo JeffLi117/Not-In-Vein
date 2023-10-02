@@ -1,6 +1,8 @@
+"use client";
 import { useState, useEffect } from "react";
 import { UserAuth } from "../context/AuthContext";
 import { Nunito, Alegreya } from 'next/font/google';
+import Link from 'next/link';
  
 const nunito = Nunito({
   subsets: ['latin'],
@@ -16,7 +18,7 @@ const alegreya = Alegreya({
   style: 'normal'
 })
 
-export default function Header() {
+export default function Navbar() {
     const { user, googleSignIn, userSignOut } = UserAuth();
     const [loading, setLoading] = useState(true);
 
@@ -49,13 +51,14 @@ export default function Header() {
             <div className={`text-4xl ${alegreya.className}`}>Not In Vein</div>
             {loading ? null : !user ? 
                 (<div className="flex items-center justify-end gap-4">
-                    <button onClick={handleSignIn}>Login</button>
-                    <button onClick={handleSignIn}>Sign Up</button>
+                    <button onClick={handleSignIn} className="py-1 px-2 rounded-md  hover:text-red-400 hover:border-red-400 hover:border">Login</button>
+                    <button onClick={handleSignIn} className="py-1 px-2 rounded-md  hover:text-red-400 hover:border-red-400 hover:border">Sign Up</button>
                 </div>)
             :
                 (<div className="flex items-center justify-end gap-4">
-                    <div>{user.displayName}</div>
-                    <button onClick={handleSignOut}>Sign Out</button>
+                    <div className="px-2">{user.displayName}</div>
+                    <Link href="/donate" className="py-1 px-2 rounded-md hover:bg-red-400 hover:text-white"> Donate </Link>
+                    <button onClick={handleSignOut} className="py-1 px-2 rounded-md hover:text-red-400 hover:border-red-400 hover:border">Sign Out</button>
                 </div>) 
             }
             
