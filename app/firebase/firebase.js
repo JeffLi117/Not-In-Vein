@@ -3,16 +3,18 @@ import 'dotenv/config';
 import { initializeApp } from "firebase/app";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
+import { getAuth } from "firebase/auth";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: process.API_KEY,
-  authDomain: process.AUTH_DOMAIN,
-  projectId: process.PROJECT_ID,
-  storageBucket: process.STORAGE_BUCKET,
-  messagingSenderId: process.MESSAGING_SENDER_ID,
-  appId: process.APP_ID
+  apiKey: "AIzaSyBKLmQ6ucKGh-Hjo9ZM4eezhvSrFNRtJvs",
+  authDomain: "not-in-vein.firebaseapp.com",
+  projectId: "not-in-vein",
+  storageBucket: "not-in-vein.appspot.com",
+  messagingSenderId: "672012263493",
+  appId: "1:672012263493:web:7da2f30dc9bf92afa5832c"
 };
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
+export const auth = getAuth(app);
