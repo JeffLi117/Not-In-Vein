@@ -1,7 +1,7 @@
-"use client";
+
 import './globals.css';
 import { AuthContextProvider } from './context/AuthContext';
-import Header from './components/Header';
+import Navbar from './components/Navbar';
 
 export const metadata = {
   title: 'Create Next App',
@@ -13,7 +13,7 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body>
         <AuthContextProvider>
-          <Header />
+          <Navbar />
           {children} 
         </AuthContextProvider>
       </body>
