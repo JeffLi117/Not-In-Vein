@@ -7,16 +7,20 @@ import "react-datepicker/dist/react-datepicker.css";
 // CSS Modules, react-datepicker-cssmodules.css
 // import 'react-datepicker/dist/react-datepicker-cssmodules.css';
 
-const SelectDate = () => {
-  const [startDate, setStartDate] = useState(new Date());
-  useEffect(() => {
-    console.log("New startDate ", startDate);
-  }, [startDate])
+const SelectDate = ({dateToPass, functionToPass}) => {
+  // const [startDate, setStartDate] = useState(new Date());
+  // useEffect(() => {
+  //   console.log("New startDate ", startDate);
+  // }, [startDate])
+
+  const handlePassingFunct = (someDate) => {
+    functionToPass(someDate);
+  }
   
   return (
     <DatePicker 
-      selected={startDate} 
-      onChange={(date) => setStartDate(date)} 
+      selected={dateToPass} 
+      onChange={(date) => handlePassingFunct(date)} 
       className="text-center border-l-4 border-red-600 w-full p-3 rounded text-sm  outline-none  focus:ring-0 bg-white"
     />
   );
