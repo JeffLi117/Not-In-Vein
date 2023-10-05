@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect} from "react";
+import Past56SelectDate from "../components/Past56SelectDate";
 import SelectDate from "../components/SelectDate";
 import { add, setMilliseconds, setSeconds, setMinutes, setHours } from "date-fns";
 
@@ -36,7 +37,7 @@ export default function Donate() {
             {donatedRecently === true && 
                 <div className={`${donatedRecently === true ? "opacity-100" : "opacity-0"} transition ease-in-out duration-500 delay-500`}>
                     <div>Please select the date of your most recent donation</div>
-                    <SelectDate
+                    <Past56SelectDate
                         dateToPass={donatedRecentlyDate} 
                         functionToPass={setDonatedRecentlyDate}
                     />
