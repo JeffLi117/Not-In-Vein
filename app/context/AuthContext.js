@@ -1,7 +1,8 @@
 "use client";
 import { useContext, createContext, useState, useEffect } from "react";
-import { signInWithPopup, signOut, onAuthStateChanged, GoogleAuthProvider } from "firebase/auth";
+import { signInWithPopup, signOut, onAuthStateChanged, GoogleAuthProvider, getAdditionalUserInfo } from "firebase/auth";
 import { auth } from "../firebase/firebase";
+import { addUserToDb, checkForUserInDb } from "../firebase/functions";
 
 const AuthContext = createContext();
 
@@ -10,7 +11,17 @@ export const AuthContextProvider = ({children}) => {
 
     const googleSignIn = () => {
         const provider = new GoogleAuthProvider();
-        signInWithPopup(auth, provider);
+        signInWithPopup(auth, provider)
+          .then((result) => {
+            const details = getAdditionalUserInfo(result);
+            // console.log(result);
+            // console.log(details);
+            // addUserToDb(result.user.uid, result.user.displayName)
+            checkForUserInDb(result.user.uid, result.user.displayName);
+          })
+          .catch((error) => {
+            console.log(error);
+          });
     }
 
     const userSignOut = () => {
