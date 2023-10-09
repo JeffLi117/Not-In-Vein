@@ -2,6 +2,8 @@
 import { useState, useEffect } from "react";
 import { UserAuth } from "../context/AuthContext";
 import { Nunito, Alegreya } from 'next/font/google';
+import { FiMenu } from 'react-icons/fi';
+import { AiOutlineClose } from 'react-icons/ai'
 import Link from 'next/link';
  
 const nunito = Nunito({
@@ -21,6 +23,7 @@ const alegreya = Alegreya({
 export default function Navbar() {
     const { user, googleSignIn, userSignOut } = UserAuth();
     const [loading, setLoading] = useState(true);
+    const [open, setOpen] = useState(false);
 
     const handleSignIn = async () => {
         try {
@@ -47,21 +50,29 @@ export default function Navbar() {
     }, [user])
 
     return (
-        <div className="flex items-center justify-between p-2">
-            <div className={`text-4xl ${alegreya.className}`}>Not In Vein</div>
+        <nav className="md:flex items-center justify-between p-2">
+            <Link href="/" className={`text-4xl ${alegreya.className}`}>Not In Vein</Link>
+            {/* menu icon */}
+            <div onClick={() => setOpen(!open)} className="absolute top-4 right-6 cursor-pointer md:hidden">
+                {open? 
+                <AiOutlineClose className="text-3xl text-gray-800" />
+                :
+                <FiMenu className=" text-3xl text-gray-800" />
+                }
+            </div>
             {loading ? null : !user ? 
-                (<div className="flex items-center justify-end gap-4">
-                    <button onClick={handleSignIn} className="py-1 px-2 rounded-md  hover:text-red-400 hover:border-red-400 hover:border">Login</button>
-                    <button onClick={handleSignIn} className="py-1 px-2 rounded-md  hover:text-red-400 hover:border-red-400 hover:border">Sign Up</button>
+                (<div className={`md:flex md:items-center md:justify-end md:gap-4  ${open? "block":"hidden"}`}>
+                    <button onClick={handleSignIn} className="block md:inline- w-full md:w-fit text-left md:text-center py-1 px-2 rounded-md  hover:text-red-400 hover:border-red-400 hover:border">Login</button>
+                    <button onClick={handleSignIn} className="block md:inline-block w-full md:w-fit  text-left md:text-center py-1 px-2 rounded-md  hover:text-red-400 hover:border-red-400 hover:border">Sign Up</button>
                 </div>)
             :
-                (<div className="flex items-center justify-end gap-4">
-                    <div className="px-2">{user.displayName}</div>
-                    <Link href="/donate" className="py-1 px-2 rounded-md hover:bg-red-400 hover:text-white">Donate</Link>
-                    <button onClick={handleSignOut} className="py-1 px-2 rounded-md hover:text-red-400 hover:border-red-400 hover:border">Sign Out</button>
+                (<div className={`md:flex md:items-center md:justify-end md:gap-4  ${open? "block":"hidden"}`}>
+                    <div className="py-1 px-2">Hi, {user.displayName}</div>
+                    <Link href="/donate" className="block py-1 px-2 rounded-md hover:bg-red-400 hover:text-white">Donate</Link>
+                    <Link href="/profile" className="block py-1 px-2 rounded-md  hover:text-red-400 hover:border-red-400 hover:border">Your Profile</Link>
+                    <Link href="/" onClick={handleSignOut} className="block py-1 px-2 rounded-md hover:text-red-400 hover:border-red-400 hover:border">Sign Out</Link>
                 </div>) 
             }
-            
-        </div>
+        </nav>
     )    
 }
