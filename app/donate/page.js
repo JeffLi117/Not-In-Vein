@@ -12,7 +12,7 @@ export default function Donate() {
 
     const cutDownDate = (longerDate) => {
         const wordsInArray = longerDate.toString().split(" ");
-        const shorterDate = wordsInArray.slice().splice(0,4).join(" ");
+        const shorterDate = wordsInArray.slice().splice(0,1)+ ", " + wordsInArray.slice().splice(1,3).join(" ");
         return shorterDate
     }
 
@@ -55,6 +55,7 @@ export default function Donate() {
                         dateToPass={scheduledDonationDate} 
                         functionToPass={setScheduledDonationDate}
                     />
+                    <div>Your next donation is scheduled to be {cutDownDate(scheduledDonationDate) === cutDownDate(new Date()) ? "today" : `${cutDownDate(scheduledDonationDate)}`}</div>
                 </div>
             }
         </div>
