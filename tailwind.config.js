@@ -10,6 +10,23 @@ module.exports = {
       backgroundImage: {
         'red-bg': 'url("../public/rbc-bg.jpg")',
       },
+      // that is animation class
+      animation: {
+        fadeout: 'fadeOut 1s ease-in-out forwards',
+        fadein: 'fadeIn 1s ease-in-out forwards',
+      },
+
+      // that is actual animation
+      keyframes: theme => ({
+        fadeOut: {
+          '0%': { opacity: 1 },
+          '100%': { opacity: 0, display: 'none' },
+        },
+        fadeIn: {
+          '0%': { opacity: 0, display: 'flex' },
+          '100%': { opacity: 1},
+        },
+      }),
     },
   },
   plugins: [],

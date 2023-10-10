@@ -21,7 +21,7 @@ export const checkForUserInDb = async (userId, name) => {
     const userSnap = await getDoc(userRef);
 
     if (userSnap.exists()) {
-        mergeUserToDb(userId, name);
+        // mergeUserToDb(userId, name);
     } else {
         // userSnap.data() will be undefined in this case
         addUserToDb(userId, name);
