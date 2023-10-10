@@ -53,7 +53,7 @@ export default function Profile() {
                 <img 
                   src={user.photoURL? user.photoURL : "default.jpg"} 
                   alt="user's photo image." 
-                  referrerpolicy="no-referrer" 
+                  referrerPolicy="no-referrer" 
                   className="rounded-full h-40 w-40 object-cover"
                 />
               </div>       
