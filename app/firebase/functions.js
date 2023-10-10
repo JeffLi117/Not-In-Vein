@@ -1,4 +1,4 @@
-import { doc, setDoc, getDoc, updateDoc } from "firebase/firestore"; 
+import { doc, onSnapshot, setDoc, getDoc, getDocs, updateDoc, collection } from "firebase/firestore"; 
 import { firestoreDb } from "./firebase";
 
 export const addUserToDb = async (userId, name) => {
@@ -21,7 +21,7 @@ export const checkForUserInDb = async (userId, name) => {
     const userSnap = await getDoc(userRef);
 
     if (userSnap.exists()) {
-        // mergeUserToDb(userId, name);
+        // mergeUserToDb(userId, name); *MERGE for future changes?
     } else {
         // userSnap.data() will be undefined in this case
         addUserToDb(userId, name);
@@ -38,5 +38,36 @@ export const addRecentDonation = async (recentDate, userId) => {
 export const addUpcomingForRecent = async (upcomingDate, userId) => {
     await updateDoc(doc(firestoreDb, "users", userId), {
         upcomingDonation: upcomingDate,
+    });
+}
+
+export const checkUpcomingDonation = async (userId) => {
+    const userRef = doc(firestoreDb, "users", userId);
+    const userSnap = await getDoc(userRef);
+
+    if (userSnap.exists() && userSnap.data().upcomingDonation !== null) {
+        console.log("userSnap has an upcomingDonation");
+        return userSnap.data().upcomingDonation.toDate();
+    } else if (userSnap.exists() && userSnap.data().upcomingDonation == null) {
+        console.log("In checkUpcomingDonation, user upcomingDonation is null.");
+        return null;
+    } else {
+        console.log("Weird -- in checkUpcomingDonation, user doesn't exist");
+    }
+}
+
+export const checkRecentDonation = async (userId) => {
+
+}
+
+export const snapshotUserInformation = (userId, stateObj, stateFxn) => {
+    onSnapshot(doc(firestoreDb, "users", userId), (doc) => {
+        console.log("Current data: ", doc.data());
+        stateFxn((stateObj) => ({
+            ...stateObj,
+            latestDonation: doc.data().latestDonation,
+            upcomingDonation: doc.data().upcomingDonation,
+            allDonations: doc.data().allDonations,
+        }))
     });
 }

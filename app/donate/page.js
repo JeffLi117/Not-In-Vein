@@ -5,7 +5,7 @@ import RecentlyDonatedSelectDate from "../components/RecentDonatedSelectDate";
 import SelectDate from "../components/SelectDate";
 import { add, setMilliseconds, setSeconds, setMinutes, setHours } from "date-fns";
 import { UserAuth } from "../context/AuthContext";
-import { addRecentDonation, addUpcomingForRecent } from "../firebase/functions";
+import { addRecentDonation, addUpcomingForRecent, checkUpcomingDonation } from "../firebase/functions";
 
 export default function Donate() {
     const {user} = UserAuth();
@@ -72,6 +72,10 @@ export default function Donate() {
                 console.log("Some error occurred :(", err.message)
             })
     }
+
+    const checkAlreadyScheduled = async () => {
+        console.log(checkUpcomingDonation(user.uid));
+    }
     
     useEffect(() => {
         // console.log("New donatedRecentlyDate ", donatedRecentlyDate);
@@ -79,8 +83,11 @@ export default function Donate() {
         setScheduleDonatedRecently(earliestToDonate(donatedRecentlyDate));
     }, [donatedRecentlyDate])
 
+    checkAlreadyScheduled();
+
     return (
         <div className="bg-red-200 h-screen p-4">
+            {/* {checkUpcomingDonation(user.uid) !== null ? <div></div> : null} */}
             
             <div className={`${confirmedAptFadeIn ? "animate-fadein" : "hidden"} flex flex-col justify-center items-center gap-4 text-xl`}>
                 <div className="text-2xl font-medium">Congratulations!</div>
