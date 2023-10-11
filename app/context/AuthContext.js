@@ -2,7 +2,9 @@
 import { useContext, createContext, useState, useEffect } from "react";
 import { signInWithPopup, signOut, onAuthStateChanged, GoogleAuthProvider, getAdditionalUserInfo } from "firebase/auth";
 import { auth } from "../firebase/firebase";
-import { checkForUserInDb, snapshotUserInformation } from "../firebase/functions";
+import { checkForUserInDb } from "../firebase/functions";
+import { doc, onSnapshot, query } from "firebase/firestore"; 
+import { firestoreDb } from "../firebase/firebase";
 
 const AuthContext = createContext();
 
@@ -39,6 +41,24 @@ export const AuthContextProvider = ({children}) => {
           });
     }
 
+    // let snapshotUserInfoUnsubscribe;
+
+    // const snapshotUserInformation = (userId, stateObj, stateFxn) => {
+    //     snapshotUserInfoUnsubscribe = onSnapshot(doc(firestoreDb, "users", userId), (doc) => {
+    //         console.log("Current data: ", doc.data());
+    //         stateFxn((stateObj) => ({
+    //             ...stateObj,
+    //             latestDonation: doc.data().latestDonation,
+    //             upcomingDonation: doc.data().upcomingDonation,
+    //             allDonations: doc.data().allDonations,
+    //         }))
+    //     });
+    // }
+
+    // const cancelSnapshotListener = () => {
+    //     off(snapshotUserInfoUnsubscribe)
+    // }
+
     const userSignOut = () => {
         signOut(auth);
     }
@@ -52,7 +72,23 @@ export const AuthContextProvider = ({children}) => {
     }, [user])
 
     useEffect(() => {
-        console.log("firebaseInfo is ", firebaseInfo);
+        if (user !== null) {
+            const snapshotUserInfoUnsubscribe = onSnapshot(doc(firestoreDb, "users", user.uid), (doc) => {
+                console.log("Current data: ", doc.data());
+                setFirebaseInfo((firebaseInfo) => ({
+                    ...firebaseInfo,
+                    latestDonation: doc.data().latestDonation,
+                    upcomingDonation: doc.data().upcomingDonation,
+                    allDonations: doc.data().allDonations,
+                }))
+            });
+
+            return () => snapshotUserInfoUnsubscribe();
+        }
+    }, [user])
+
+    useEffect(() => {
+        console.log("firebaseInfo has changed, it's now: ", firebaseInfo);
     }, [firebaseInfo])
 
     return (

@@ -59,15 +59,3 @@ export const checkUpcomingDonation = async (userId) => {
 export const checkRecentDonation = async (userId) => {
 
 }
-
-export const snapshotUserInformation = (userId, stateObj, stateFxn) => {
-    onSnapshot(doc(firestoreDb, "users", userId), (doc) => {
-        console.log("Current data: ", doc.data());
-        stateFxn((stateObj) => ({
-            ...stateObj,
-            latestDonation: doc.data().latestDonation,
-            upcomingDonation: doc.data().upcomingDonation,
-            allDonations: doc.data().allDonations,
-        }))
-    });
-}
