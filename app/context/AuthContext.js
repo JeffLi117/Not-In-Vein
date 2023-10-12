@@ -75,11 +75,18 @@ export const AuthContextProvider = ({children}) => {
         if (user !== null) {
             const snapshotUserInfoUnsubscribe = onSnapshot(doc(firestoreDb, "users", user.uid), (doc) => {
                 console.log("Current data: ", doc.data());
+                let tempLatest, tempUpcoming = null;
+                if (doc.data().latestDonation) {
+                    tempLatest = doc.data().latestDonation.toDate();
+                } 
+                if (doc.data().upcomingDonation) {
+                    tempUpcoming = doc.data().upcomingDonation.toDate();
+                } 
                 setFirebaseInfo((firebaseInfo) => ({
                     ...firebaseInfo,
                     uid: user.uid,
-                    latestDonation: doc.data().latestDonation,
-                    upcomingDonation: doc.data().upcomingDonation,
+                    latestDonation: tempLatest,
+                    upcomingDonation: tempUpcoming,
                     allDonations: doc.data().allDonations,
                 }))
             });
