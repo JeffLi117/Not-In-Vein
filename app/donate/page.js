@@ -5,10 +5,10 @@ import RecentlyDonatedSelectDate from "../components/RecentDonatedSelectDate";
 import SelectDate from "../components/SelectDate";
 import { add, setMilliseconds, setSeconds, setMinutes, setHours } from "date-fns";
 import { UserAuth } from "../context/AuthContext";
-import { addRecentDonation, addUpcomingForRecent, checkUpcomingDonation } from "../firebase/functions";
+import { addRecentDonation, addUpcomingForRecent } from "../firebase/functions";
 
 export default function Donate() {
-    const {user} = UserAuth();
+    const { user, firebaseInfo } = UserAuth();
     const [donatedRecently, setDonatedRecently] = useState();
     const [donatedRecentlyDate, setDonatedRecentlyDate] = useState(new Date());
     const [scheduledDonationDate, setScheduledDonationDate] = useState(new Date());
@@ -73,76 +73,80 @@ export default function Donate() {
             })
     }
 
-    const checkAlreadyScheduled = async () => {
-        console.log(checkUpcomingDonation(user.uid));
-    }
-    
     useEffect(() => {
         // console.log("New donatedRecentlyDate ", donatedRecentlyDate);
         setEarliestPossDonation(earliestToDonate(donatedRecentlyDate));
         setScheduleDonatedRecently(earliestToDonate(donatedRecentlyDate));
     }, [donatedRecentlyDate])
 
-    checkAlreadyScheduled();
+    // upcomingDonationReturned();
 
     return (
         <div className="bg-red-200 h-screen p-4">
-            {/* {checkUpcomingDonation(user.uid) !== null ? <div></div> : null} */}
-            
-            <div className={`${confirmedAptFadeIn ? "animate-fadein" : "hidden"} flex flex-col justify-center items-center gap-4 text-xl`}>
-                <div className="text-2xl font-medium">Congratulations!</div>
-                <div>Your appointment has been confirmed for {`${cutDownDate(scheduledDonationDate)}`}.</div>
-            </div>
-            
-            <div className={`${confirmedAptFadeOut ? "animate-fadeout" : null}`}>
-                <div className="text-xl flex justify-center items-center mb-4">Have you donated blood within the past 56 days?</div>
-                <div className="flex justify-center items-center gap-2 mb-4">
-                    <button onClick={() => setDonatedRecently(true)} className={`border p-2 min-w-[7%] border-red-600 border-2 rounded-full hover:border-black hover:bg-slate-200 hover:bg-red-600 transition ease-in-out ${donatedRecently === true ? "bg-red-600" : null}`}>Yes</button>
-                    <button onClick={() => setDonatedRecently(false)} className={`border p-2 min-w-[7%] border-red-600 border-2 rounded-full hover:border-black hover:bg-slate-200 hover:bg-red-600 transition ease-in-out ${donatedRecently === false ? "bg-red-600" : null}`}>No</button>
-                </div>
-                {donatedRecently === true && 
-                    <div className={`${donatedRecently === true ? "opacity-100" : "opacity-0"} transition ease-in-out duration-500 delay-500 flex flex-col justify-center items-center gap-4`}>
-                        <div>Please select the date of your most recent donation</div>
-                        <Past56SelectDate
-                            dateToPass={donatedRecentlyDate} 
-                            functionToPass={setDonatedRecentlyDate}
-                        />
-                        {(donatedRecently === true && donatedRecentlyDate !== null) &&
-                            <div>Since your most recent donation was on {`${cutDownDate(donatedRecentlyDate)}`},
-                            <br></br>
-                            The earliest your next donation can be is {`${cutDownDate(earliestPossDonation)}`}.</div>
+            {(user && firebaseInfo.upcomingDonation) ? 
+            <div>You have an upcoming appointment scheduled on {`${cutDownDate(firebaseInfo.upcomingDonation.toDate())}`}.</div>
+                : (user && !firebaseInfo.upcomingDonation) ?
+                <div>
+                    <div className={`${confirmedAptFadeIn ? "animate-fadein" : "hidden"} flex flex-col justify-center items-center gap-4 text-xl`}>
+                        <div className="text-2xl font-medium">Congratulations!</div>
+                        <div>Your appointment has been confirmed for {`${cutDownDate(scheduledDonationDate)}`}.</div>
+                    </div>
+                    
+                    <div className={`${confirmedAptFadeOut ? "animate-fadeout" : null}`}>
+                        <div className="text-xl flex justify-center items-center mb-4">Have you donated blood within the past 56 days?</div>
+                        <div className="flex justify-center items-center gap-2 mb-4">
+                            <button onClick={() => setDonatedRecently(true)} className={`border p-2 min-w-[7%] border-red-600 border-2 rounded-full hover:border-black hover:bg-slate-200 hover:bg-red-600 transition ease-in-out ${donatedRecently === true ? "bg-red-600" : null}`}>Yes</button>
+                            <button onClick={() => setDonatedRecently(false)} className={`border p-2 min-w-[7%] border-red-600 border-2 rounded-full hover:border-black hover:bg-slate-200 hover:bg-red-600 transition ease-in-out ${donatedRecently === false ? "bg-red-600" : null}`}>No</button>
+                        </div>
+                        {donatedRecently === true && 
+                            <div className={`${donatedRecently === true ? "opacity-100" : "opacity-0"} transition ease-in-out duration-500 delay-500 flex flex-col justify-center items-center gap-4`}>
+                                <div>Please select the date of your most recent donation</div>
+                                <Past56SelectDate
+                                    dateToPass={donatedRecentlyDate} 
+                                    functionToPass={setDonatedRecentlyDate}
+                                />
+                                {(donatedRecently === true && donatedRecentlyDate !== null) &&
+                                    <div>Since your most recent donation was on {`${cutDownDate(donatedRecentlyDate)}`},
+                                    <br></br>
+                                    The earliest your next donation can be is {`${cutDownDate(earliestPossDonation)}`}.</div>
+                                }
+                                <button onClick={() => toggleOpenSchedDonatedRecently()} className={`border p-2 min-w-[7%] border-red-600 border-2 rounded-full hover:border-black hover:bg-slate-200 hover:bg-red-600 transition ease-in-out ${remindSchedule ? "bg-white animate-pulse" : null}`}>
+                                    {openScheduleDonatedRecently ? "Close calendar" : "Schedule your next appointment"
+                                    }
+                                </button>
+                                {openScheduleDonatedRecently && 
+                                    <RecentlyDonatedSelectDate
+                                        earliestPossDonation={earliestPossDonation} 
+                                        dateToPass={scheduleDonatedRecently} 
+                                        functionToPass={setScheduleDonatedRecently}
+                                    />
+                                }   
+                                {cutDownDate(scheduleDonatedRecently) === cutDownDate(new Date()) ? null : 
+                                    <div className="flex flex-col justify-center items-center gap-2">
+                                        <div>Your next donation is scheduled to be {`${cutDownDate(scheduleDonatedRecently)}`}.</div>
+                                        <button onClick={() => confirmAptRecentDonation()} className="border p-2 min-w-[7%] border-red-600 border-2 rounded-full hover:border-black hover:bg-slate-200 hover:bg-red-600 transition ease-in-out">Confirm</button>
+                                    </div>
+                                }
+                            </div>
                         }
-                        <button onClick={() => toggleOpenSchedDonatedRecently()} className={`border p-2 min-w-[7%] border-red-600 border-2 rounded-full hover:border-black hover:bg-slate-200 hover:bg-red-600 transition ease-in-out ${remindSchedule ? "bg-white animate-pulse" : null}`}>
-                            {openScheduleDonatedRecently ? "Close calendar" : "Schedule your next appointment"
-                            }
-                        </button>
-                        {openScheduleDonatedRecently && 
-                            <RecentlyDonatedSelectDate
-                                earliestPossDonation={earliestPossDonation} 
-                                dateToPass={scheduleDonatedRecently} 
-                                functionToPass={setScheduleDonatedRecently}
-                            />
-                        }   
-                        {cutDownDate(scheduleDonatedRecently) === cutDownDate(new Date()) ? null : 
-                            <div className="flex flex-col justify-center items-center gap-2">
-                                <div>Your next donation is scheduled to be {`${cutDownDate(scheduleDonatedRecently)}`}.</div>
-                                <button onClick={() => confirmAptRecentDonation()} className="border p-2 min-w-[7%] border-red-600 border-2 rounded-full hover:border-black hover:bg-slate-200 hover:bg-red-600 transition ease-in-out">Confirm</button>
+                        {donatedRecently === false &&
+                            <div className={`${donatedRecently === false ? "opacity-100" : "opacity-0"} transition ease-in-out duration-500 delay-500 flex flex-col justify-center items-center gap-4`}>
+                                <div>Please select the date of your next donation appointment</div>
+                                <SelectDate
+                                    dateToPass={scheduledDonationDate} 
+                                    functionToPass={setScheduledDonationDate}
+                                />
+                                <div>Your next donation is scheduled to be {cutDownDate(scheduledDonationDate) === cutDownDate(new Date()) ? "today" : `${cutDownDate(scheduledDonationDate)}`}.</div>
+                                <button onClick={() => confirmApt()} className="border p-2 min-w-[7%] border-red-600 border-2 rounded-full hover:border-black hover:bg-slate-200 hover:bg-red-600 transition ease-in-out">Confirm</button>
                             </div>
                         }
                     </div>
-                }
-                {donatedRecently === false &&
-                    <div className={`${donatedRecently === false ? "opacity-100" : "opacity-0"} transition ease-in-out duration-500 delay-500 flex flex-col justify-center items-center gap-4`}>
-                        <div>Please select the date of your next donation appointment</div>
-                        <SelectDate
-                            dateToPass={scheduledDonationDate} 
-                            functionToPass={setScheduledDonationDate}
-                        />
-                        <div>Your next donation is scheduled to be {cutDownDate(scheduledDonationDate) === cutDownDate(new Date()) ? "today" : `${cutDownDate(scheduledDonationDate)}`}.</div>
-                        <button onClick={() => confirmApt()} className="border p-2 min-w-[7%] border-red-600 border-2 rounded-full hover:border-black hover:bg-slate-200 hover:bg-red-600 transition ease-in-out">Confirm</button>
-                    </div>
-                }
-            </div>
+                </div>
+                    : (user || user == null) ? 
+                    <div>Loading...</div>
+                        : 
+                        <div>Please login to schedule your appointment!</div>
+            }
         </div>
     )
   }

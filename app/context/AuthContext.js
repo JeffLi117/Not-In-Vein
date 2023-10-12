@@ -77,6 +77,7 @@ export const AuthContextProvider = ({children}) => {
                 console.log("Current data: ", doc.data());
                 setFirebaseInfo((firebaseInfo) => ({
                     ...firebaseInfo,
+                    uid: user.uid,
                     latestDonation: doc.data().latestDonation,
                     upcomingDonation: doc.data().upcomingDonation,
                     allDonations: doc.data().allDonations,
@@ -92,7 +93,7 @@ export const AuthContextProvider = ({children}) => {
     }, [firebaseInfo])
 
     return (
-        <AuthContext.Provider value={{user, googleSignIn, userSignOut, firebaseInfo, setFirebaseInfo}}>{children}</AuthContext.Provider>
+        <AuthContext.Provider value={{user, googleSignIn, userSignOut, firebaseInfo, setFirebaseInfo, firebaseInfo}}>{children}</AuthContext.Provider>
     )
 }
 
