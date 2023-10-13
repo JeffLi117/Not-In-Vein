@@ -2,6 +2,8 @@
 import { useState, useEffect } from "react";
 import { UserAuth } from "../context/AuthContext";
 import { Nunito, Alegreya, Plaster } from 'next/font/google';
+import cutDownDate from "../components/helpers";
+import { formatDistanceToNow } from 'date-fns';
 import Link from 'next/link';
 import Image from 'next/image';
  
@@ -24,9 +26,18 @@ function takeFirstLetter(name){
 }
 
 export default function Profile() {
-  const {user} = UserAuth();
+  const {user, firebaseInfo} = UserAuth();
   const [loading, setLoading] = useState(true);
   console.log(user);
+  const upcomingDonation = firebaseInfo.upcomingDonation?.toDate();
+  const latestDonation = firebaseInfo.latestDonation?.toDate();
+  if(upcomingDonation){
+    console.log(formatDistanceToNow(upcomingDonation))
+  }
+
+  "5 days until your upcoming donation date"
+  "you don't have upcoming donation date scheduled"
+  "last donation was XXX"
 
   useEffect(() => {
       const checkAuthentication = async () => {
@@ -61,11 +72,24 @@ export default function Profile() {
             </header>
             <main className="mt-10 text-center sm:text-left">
               <section>
-                <h2 className="text-xl font-bold">Donation Date</h2>
-                <ul>
-                  <li>2023/8/15</li>
-                  <li>2023/10/1</li>
-                </ul>
+                {upcomingDonation
+                ? (
+                  <div>
+                    <h2 className="text-xl font-bold">{formatDistanceToNow(upcomingDonation)} Days left until upcoming donation {cutDownDate(upcomingDonation)}</h2>
+                    {/* <p>
+                      {cutDownDate(upcomingDonation)}
+                    </p> */}
+                  </div>
+                  )
+                :(
+                  <h2>You don't have upcoming donation date scheduled.</h2>
+                )}
+                {/* <h2 className="text-xl font-bold">Upcoming Donation Date</h2>
+                <p>
+                  {upcomingDonation
+                  ? cutDownDate(upcomingDonation)
+                  : ""}
+                </p> */}
               </section>
               <section className="mt-10">
                 <h2 className="text-xl font-bold"> Badges</h2>
