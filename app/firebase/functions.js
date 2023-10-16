@@ -1,10 +1,10 @@
 import { doc, onSnapshot, setDoc, getDoc, getDocs, updateDoc, collection } from "firebase/firestore"; 
 import { firestoreDb } from "./firebase";
 
-export const addUserToDb = async (userId, name) => {
+export const addUserToDb = async (userId, name, userEmail) => {
     await setDoc(
         doc(firestoreDb, "users", userId), 
-        { name: name, latestDonation: null, upcomingDonation: null, allDonations: [] });
+        { name: name, latestDonation: null, upcomingDonation: null, allDonations: [], email: userEmail });
 }
 
 export const mergeUserToDb = async (userId, name) => {
@@ -15,7 +15,7 @@ export const mergeUserToDb = async (userId, name) => {
         { merge: true });
 }
 
-export const checkForUserInDb = async (userId, name) => {
+export const checkForUserInDb = async (userId, name, userEmail) => {
 
     const userRef = doc(firestoreDb, "users", userId);
     const userSnap = await getDoc(userRef);
@@ -24,7 +24,7 @@ export const checkForUserInDb = async (userId, name) => {
         // mergeUserToDb(userId, name); *MERGE for future changes?
     } else {
         // userSnap.data() will be undefined in this case
-        addUserToDb(userId, name);
+        addUserToDb(userId, name, userEmail);
         console.log("No such user!");
     }
 }
