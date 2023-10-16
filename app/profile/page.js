@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { UserAuth } from "../context/AuthContext";
 import { Nunito, Alegreya, Plaster } from 'next/font/google';
 import cutDownDate from "../components/helpers";
-import { formatDistanceToNow, isFuture } from 'date-fns';
+import { formatDistanceToNowStrict, isToday, isFuture } from 'date-fns';
 import Link from 'next/link';
 import Image from 'next/image';
  
@@ -28,12 +28,8 @@ export default function Profile() {
   const upcomingDonation = firebaseInfo.upcomingDonation;
   const latestDonation = firebaseInfo.latestDonation;
   if(upcomingDonation){
-    console.log(formatDistanceToNow(upcomingDonation))
+    console.log(formatDistanceToNowStrict(upcomingDonation))
   }
-
-  // "5 days until your upcoming donation date"
-  // "you don't have upcoming donation date scheduled"
-  // "last donation was XXX"
 
   useEffect(() => {
       const checkAuthentication = async () => {
@@ -68,15 +64,7 @@ export default function Profile() {
             </header>
             <main className="mt-10 text-center sm:text-left">
               <section>
-                {upcomingDonation && isFuture(upcomingDonation)
-                ? (
-                  <div>
-                    <h2 className="text-xl font-bold">{formatDistanceToNow(upcomingDonation)} Days left until upcoming donation {cutDownDate(upcomingDonation)}</h2>
-                  </div>
-                  )
-                :(
-                  <h2>You don't have upcoming donation date scheduled.</h2>
-                )}
+                <ShowDonationCountDown date={upcomingDonation} />
               </section>
               <section className="mt-10">
                 <h2 className="text-xl font-bold"> Badges</h2>
@@ -93,3 +81,30 @@ export default function Profile() {
     )
 }
 
+// I will put this into separate component, but for now I want to keep it here.
+function ShowDonationCountDown({date}){
+  if(date && isFuture(date)){
+    return(  
+        <div>
+          <h2 className="text-xl font-bold">
+            <span className="block text-3xl pb-5">{formatDistanceToNowStrict(date)}</span>
+            until upcoming donation date{cutDownDate(date)}</h2>
+        </div>
+        )
+  } else if( date && isToday(date)){
+    return(
+      <div>
+      <h2 className="text-xl font-bold">
+        Today is your donation day!
+      </h2>
+    </div>
+    )
+  } else{
+    return (
+      <div>
+        <h2 className="text-xl font-bold pb-2">You don't have upcoming donation date scheduled.</h2>
+        <Link href='/donate'><button  className="block py-1 px-2 rounded-md font-semibold bg-red-400 text-white hover:bg-red-600">Schedule Donation</button> </Link>
+      </div>
+    )
+  }
+}
