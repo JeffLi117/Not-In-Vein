@@ -53,6 +53,7 @@ export const checkUpcomingDonation = async (userId) => {
         return null;
     } else {
         console.log("Weird -- in checkUpcomingDonation, user doesn't exist");
+        return null;
     }
 }
 
