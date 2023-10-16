@@ -88,7 +88,7 @@ function ShowDonationCountDown({date}){
         <div>
           <h2 className="text-xl font-bold">
             <span className="block text-3xl pb-5">{formatDistanceToNowStrict(date)}</span>
-            until upcoming donation date{cutDownDate(date)}</h2>
+            until upcoming donation date: {cutDownDate(date)}</h2>
         </div>
         )
   } else if( date && isToday(date)){
