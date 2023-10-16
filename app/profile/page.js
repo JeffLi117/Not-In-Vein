@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { UserAuth } from "../context/AuthContext";
 import { Nunito, Alegreya, Plaster } from 'next/font/google';
 import cutDownDate from "../components/helpers";
-import { formatDistanceToNow } from 'date-fns';
+import { formatDistanceToNow, isFuture } from 'date-fns';
 import Link from 'next/link';
 import Image from 'next/image';
  
@@ -21,23 +21,19 @@ const alegreya = Alegreya({
   style: 'normal'
 })
 
-function takeFirstLetter(name){
-  return name.charAt(0).toUpperCase();
-}
-
 export default function Profile() {
   const {user, firebaseInfo} = UserAuth();
   const [loading, setLoading] = useState(true);
   console.log(user);
-  const upcomingDonation = firebaseInfo.upcomingDonation?.toDate();
-  const latestDonation = firebaseInfo.latestDonation?.toDate();
+  const upcomingDonation = firebaseInfo.upcomingDonation;
+  const latestDonation = firebaseInfo.latestDonation;
   if(upcomingDonation){
     console.log(formatDistanceToNow(upcomingDonation))
   }
 
-  "5 days until your upcoming donation date"
-  "you don't have upcoming donation date scheduled"
-  "last donation was XXX"
+  // "5 days until your upcoming donation date"
+  // "you don't have upcoming donation date scheduled"
+  // "last donation was XXX"
 
   useEffect(() => {
       const checkAuthentication = async () => {
@@ -72,24 +68,15 @@ export default function Profile() {
             </header>
             <main className="mt-10 text-center sm:text-left">
               <section>
-                {upcomingDonation
+                {upcomingDonation && isFuture(upcomingDonation)
                 ? (
                   <div>
                     <h2 className="text-xl font-bold">{formatDistanceToNow(upcomingDonation)} Days left until upcoming donation {cutDownDate(upcomingDonation)}</h2>
-                    {/* <p>
-                      {cutDownDate(upcomingDonation)}
-                    </p> */}
                   </div>
                   )
                 :(
                   <h2>You don't have upcoming donation date scheduled.</h2>
                 )}
-                {/* <h2 className="text-xl font-bold">Upcoming Donation Date</h2>
-                <p>
-                  {upcomingDonation
-                  ? cutDownDate(upcomingDonation)
-                  : ""}
-                </p> */}
               </section>
               <section className="mt-10">
                 <h2 className="text-xl font-bold"> Badges</h2>
@@ -105,3 +92,4 @@ export default function Profile() {
         </div>
     )
 }
+
