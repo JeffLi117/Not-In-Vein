@@ -2,6 +2,8 @@
 import { useState, useEffect } from "react";
 import { UserAuth } from "../context/AuthContext";
 import { Nunito, Alegreya, Plaster } from 'next/font/google';
+import cutDownDate from "../components/helpers";
+import { formatDistanceToNowStrict, isToday, isFuture } from 'date-fns';
 import Link from 'next/link';
 import Image from 'next/image';
  
@@ -19,14 +21,15 @@ const alegreya = Alegreya({
   style: 'normal'
 })
 
-function takeFirstLetter(name){
-  return name.charAt(0).toUpperCase();
-}
-
 export default function Profile() {
-  const {user} = UserAuth();
+  const {user, firebaseInfo} = UserAuth();
   const [loading, setLoading] = useState(true);
   console.log(user);
+  const upcomingDonation = firebaseInfo.upcomingDonation;
+  const latestDonation = firebaseInfo.latestDonation;
+  if(upcomingDonation){
+    console.log(formatDistanceToNowStrict(upcomingDonation))
+  }
 
   useEffect(() => {
       const checkAuthentication = async () => {
@@ -61,11 +64,7 @@ export default function Profile() {
             </header>
             <main className="mt-10 text-center sm:text-left">
               <section>
-                <h2 className="text-xl font-bold">Donation Date</h2>
-                <ul>
-                  <li>2023/8/15</li>
-                  <li>2023/10/1</li>
-                </ul>
+                <ShowDonationCountDown date={upcomingDonation} />
               </section>
               <section className="mt-10">
                 <h2 className="text-xl font-bold"> Badges</h2>
@@ -80,4 +79,32 @@ export default function Profile() {
         }
         </div>
     )
+}
+
+// I will put this into separate component, but for now I want to keep it here.
+function ShowDonationCountDown({date}){
+  if(date && isFuture(date)){
+    return(  
+        <div>
+          <h2 className="text-xl font-bold">
+            <span className="block text-3xl pb-5">{formatDistanceToNowStrict(date)}</span>
+            until upcoming donation date: {cutDownDate(date)}</h2>
+        </div>
+        )
+  } else if( date && isToday(date)){
+    return(
+      <div>
+      <h2 className="text-xl font-bold">
+        Today is your donation day!
+      </h2>
+    </div>
+    )
+  } else{
+    return (
+      <div>
+        <h2 className="text-xl font-bold pb-2">You don't have upcoming donation date scheduled.</h2>
+        <Link href='/donate'><button  className="block py-1 px-2 rounded-md font-semibold bg-red-400 text-white hover:bg-red-600">Schedule Donation</button> </Link>
+      </div>
+    )
+  }
 }
