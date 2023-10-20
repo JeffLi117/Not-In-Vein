@@ -76,24 +76,26 @@ export const AuthContextProvider = ({children}) => {
         if (user !== null) {
             const snapshotUserInfoUnsubscribe = onSnapshot(doc(firestoreDb, "users", user.uid), (doc) => {
                 console.log("Current data: ", doc.data());
-                let tempLatest, tempUpcoming, tempEmail = null;
-                if (doc.data().latestDonation) {
-                    tempLatest = doc.data().latestDonation.toDate();
-                } 
-                if (doc.data().upcomingDonation) {
-                    tempUpcoming = doc.data().upcomingDonation.toDate();
-                } 
-                if (doc.data().email) {
-                    tempEmail = doc.data().email;
+                if (doc.data()) {
+                    let tempLatest, tempUpcoming, tempEmail = null;
+                    if (doc.data().latestDonation) {
+                        tempLatest = doc.data().latestDonation.toDate();
+                    } 
+                    if (doc.data().upcomingDonation) {
+                        tempUpcoming = doc.data().upcomingDonation.toDate();
+                    } 
+                    if (doc.data().email) {
+                        tempEmail = doc.data().email;
+                    }
+                    setFirebaseInfo((firebaseInfo) => ({
+                        ...firebaseInfo,
+                        uid: user.uid,
+                        latestDonation: tempLatest,
+                        upcomingDonation: tempUpcoming,
+                        email: tempEmail,
+                        allDonations: doc.data().allDonations,
+                    }))
                 }
-                setFirebaseInfo((firebaseInfo) => ({
-                    ...firebaseInfo,
-                    uid: user.uid,
-                    latestDonation: tempLatest,
-                    upcomingDonation: tempUpcoming,
-                    email: tempEmail,
-                    allDonations: doc.data().allDonations,
-                }))
             });
 
             return () => snapshotUserInfoUnsubscribe();
