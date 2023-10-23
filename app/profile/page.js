@@ -1,26 +1,13 @@
 "use client";
 import { useState, useEffect } from "react";
 import { UserAuth } from "../context/AuthContext";
-import { Nunito, Alegreya, Plaster } from 'next/font/google';
 import cutDownDate from "../components/helpers";
+import { addUpcomingForRecent } from "../firebase/functions"
 import { formatDistanceToNowStrict, isToday, isFuture } from 'date-fns';
-import Link from 'next/link';
-import Image from 'next/image';
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import Image from "next/image";
  
-const nunito = Nunito({
-  subsets: ['latin'],
-  variable: '--font-nunito',
-  weight: '400',
-  style: 'normal'
-})
-
-const alegreya = Alegreya({
-  subsets: ['latin'],
-  variable: '--font-alegreya',
-  weight: '400',
-  style: 'normal'
-})
-
 export default function Profile() {
   const {user, firebaseInfo} = UserAuth();
   const [loading, setLoading] = useState(true);
@@ -39,7 +26,7 @@ export default function Profile() {
       checkAuthentication();
   }, [user])
     
-    console.log(user);
+
     return (
         <div className="mt-10 justify-center items-center w-10/12 mx-auto">
           {loading ? 
@@ -83,12 +70,33 @@ export default function Profile() {
 
 // I will put this into separate component, but for now I want to keep it here.
 function ShowDonationCountDown({date}){
+  const {user} = UserAuth();
+  const router = useRouter();
+
+  async function handleReschedule(){
+    console.log('did this run?')
+    try{
+      await addUpcomingForRecent(null, user.uid);
+      console.log("date change to null, redirecting to donate page");
+      router.push("/donate");   
+    }catch(e){
+      console.log("something went wrong at handleReschedule", e);
+    }
+  }
+
   if(date && isFuture(date)){
     return(  
         <div>
           <h2 className="text-xl font-bold">
-            <span className="block text-3xl pb-5">{formatDistanceToNowStrict(date)}</span>
-            until upcoming donation date: {cutDownDate(date)}</h2>
+            <span className="block text-5xl pb-5">
+              {formatDistanceToNowStrict(date)}
+            </span>
+            until upcoming donation date: {cutDownDate(date)}
+          </h2>
+          <button onClick={handleReschedule}
+                  className="mt-3 block py-1 px-2 rounded-md font-semibold bg-red-400 text-white hover:bg-red-600">
+                    Reschedule
+          </button>
         </div>
         )
   } else if( date && isToday(date)){
@@ -97,6 +105,10 @@ function ShowDonationCountDown({date}){
       <h2 className="text-xl font-bold">
         Today is your donation day!
       </h2>
+      <button onClick={handleReschedule}
+                  className="mt-3 block py-1 px-2 rounded-md font-semibold bg-red-400 text-white hover:bg-red-600">
+                    Reschedule
+          </button>
     </div>
     )
   } else{
