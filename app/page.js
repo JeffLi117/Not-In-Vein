@@ -6,17 +6,6 @@ const landingPageSentences = [
   "Want to donate blood but having a hard time remembering? We keep track of when you last donated and remind you of upcoming scheduled appointments.",
 ]
 
-const reasonsToDonate = [
-  "Improve/save the lives of 3 people.",
-  "Get a free health screening.",
-  "Lower your blood pressure and heart attack risk.",
-  "Burn 500 calories without breaking a sweat.",
-]
-
-{/* {reasonsToDonate.map((string) => {
-            return <div key={string.id}>{string}</div>
-})} */}
-        
 const nunito = Nunito({
   subsets: ['latin'],
   variable: '--font-nunito',
