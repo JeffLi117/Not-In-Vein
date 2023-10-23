@@ -12,9 +12,6 @@ export default function Profile() {
   console.log(user);
   const upcomingDonation = firebaseInfo.upcomingDonation;
   const latestDonation = firebaseInfo.latestDonation;
-  if(upcomingDonation){
-    console.log(formatDistanceToNowStrict(upcomingDonation))
-  }
 
   useEffect(() => {
       const checkAuthentication = async () => {
