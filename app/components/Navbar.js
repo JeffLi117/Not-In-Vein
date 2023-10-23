@@ -75,12 +75,14 @@ export default function Navbar() {
             </div>
             {loading ? null : !user ? 
                 (<div className={`md:flex md:items-center md:justify-end md:gap-4  ${open? "block":"hidden"}`}>
+                    <Link href="/about" className="block md:inline- w-full md:w-fit text-left font-semibold md:text-center py-1 px-2 rounded-md hover:text-white hover:bg-red-400 hover:text-white border border-transparent">About</Link>
                     <button onClick={handleSignIn} className="block md:inline- w-full md:w-fit text-left font-semibold md:text-center py-1 px-2 rounded-md hover:text-white hover:border-white border border-transparent">Login</button>
                     <button onClick={handleSignIn} className="block md:inline-block w-full md:w-fit text-left font-semibold md:text-center py-1 px-2 rounded-md hover:text-white hover:border-white border border-transparent">Sign Up</button>
                 </div>)
             :
                 (<div className={`md:flex md:items-center md:justify-end md:gap-4 font-semibold ${open? "block":"hidden"}`}>
                     <div className="py-1 px-2">Hi, {user.displayName}</div>
+                    <Link href="/about" className="block md:inline- w-full md:w-fit text-left font-semibold md:text-center py-1 px-2 rounded-md hover:text-white hover:border-white border border-transparent">About</Link>
                     <Link href="/donate" className="block py-1 px-2 rounded-md font-semibold hover:bg-red-400 hover:text-white">Donate</Link>
                     <Link href="/profile" className="block py-1 px-2 rounded-md font-semibold hover:text-white hover:border-white border border-transparent">Your Profile</Link>
                     <Link href="/" onClick={handleSignOut} className="block py-1 px-2 rounded-md font-semibold hover:text-white hover:border-white border border-transparent">Sign Out</Link>
