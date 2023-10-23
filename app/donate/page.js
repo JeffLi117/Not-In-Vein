@@ -58,6 +58,7 @@ export default function Donate() {
     const confirmApt = async () => {
         Promise.all([addUpcomingForRecent(scheduledDonationDate, user.uid)])
             .then(console.log("Congrats on confirming your upcoming appointment!"))
+            .then(setStayOnScheduling(true))
             .then(changeToConfirmedApt())
             .catch(function(err) {
                 console.log("Some error occurred :(", err.message)
