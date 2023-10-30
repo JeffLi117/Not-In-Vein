@@ -34,7 +34,7 @@ export const AuthContextProvider = ({children}) => {
                 ...prevState,
                 uid: result.user.uid,
             }));
-            snapshotUserInformation(result.user.uid, firebaseInfo, setFirebaseInfo);
+            // snapshotUserInformation(result.user.uid, firebaseInfo, setFirebaseInfo);
           })
         // .then(updateWithFirebaseInfo(firebaseInfo.uid))
           .catch((error) => {
@@ -77,7 +77,7 @@ export const AuthContextProvider = ({children}) => {
             const snapshotUserInfoUnsubscribe = onSnapshot(doc(firestoreDb, "users", user.uid), (doc) => {
                 console.log("Current data: ", doc.data());
                 if (doc.data()) {
-                    let tempLatest, tempUpcoming, tempEmail = null;
+                    let tempLatest, tempUpcoming, tempEmail, tempName = null;
                     if (doc.data().latestDonation) {
                         tempLatest = doc.data().latestDonation.toDate();
                     } 
@@ -87,9 +87,13 @@ export const AuthContextProvider = ({children}) => {
                     if (doc.data().email) {
                         tempEmail = doc.data().email;
                     }
+                    if (doc.data().name) {
+                        tempName = doc.data().name;
+                    }
                     setFirebaseInfo((firebaseInfo) => ({
                         ...firebaseInfo,
                         uid: user.uid,
+                        name: tempName,
                         latestDonation: tempLatest,
                         upcomingDonation: tempUpcoming,
                         email: tempEmail,
