@@ -1,6 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import DatePicker from "react-datepicker";
+import { isPast } from "date-fns";
 
 import "react-datepicker/dist/react-datepicker.css";
 
@@ -19,9 +20,9 @@ const RecentlyDonatedSelectDate = ({dateToPass, functionToPass, earliestPossDona
 
   return (
     <DatePicker 
-      selected={dateToPass} 
+      selected={isPast(dateToPass)?new Date() :dateToPass} 
       onChange={(date) => handlePassingFunct(date)} 
-      minDate={earliestPossDonation}
+      minDate={isPast(earliestPossDonation)?new Date() :earliestPossDonation}
       className="text-center border-l-4 border-red-600 w-full p-3 rounded text-sm  outline-none  focus:ring-0 bg-white"
     />
   );
