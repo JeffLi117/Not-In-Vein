@@ -5,6 +5,7 @@ import { auth } from "../firebase/firebase";
 import { checkForUserInDb } from "../firebase/functions";
 import { doc, onSnapshot, query } from "firebase/firestore"; 
 import { firestoreDb } from "../firebase/firebase";
+import TokenApi from "../api/TokenApi";
 
 const AuthContext = createContext();
 
@@ -30,6 +31,8 @@ export const AuthContextProvider = ({children}) => {
             console.log(result);
             console.log(details);
             checkForUserInDb(result.user.uid, result.user.displayName, result.user.email);
+            // TokenApi.token = someFirebaseToken;
+            TokenApi.getUserData(result.user.uid);
             setFirebaseInfo((prevState) => ({
                 ...prevState,
                 uid: result.user.uid,

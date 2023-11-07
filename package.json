@@ -17,6 +17,7 @@
     "@react-google-maps/api": "^2.19.2",
     "autoprefixer": "10.4.15",
     "aws-crt": "^1.18.3",
+    "axios": "^1.6.0",
     "date-fns": "^2.30.0",
     "deck.gl": "^8.9.31",
     "dotenv": "^16.3.1",
