@@ -28,11 +28,20 @@ export const AuthContextProvider = ({children}) => {
         signInWithPopup(auth, provider)
           .then((result) => {
             const details = getAdditionalUserInfo(result);
-            console.log(result);
-            console.log(details);
+            // console.log(result);
+            // console.log(details);
             checkForUserInDb(result.user.uid, result.user.displayName, result.user.email);
+            TokenApi.getUserData(result.user.uid)
+                .then((res) => {
+                    console.log(res);
+                    if(!res) {
+                        TokenApi.addUserData(result.user)
+                    } else {
+                        console.log(`user already exists with id of ${res.id}`)
+                    }
+                })
             // TokenApi.token = someFirebaseToken;
-            TokenApi.getUserData(result.user.uid);
+            // TokenApi.getUserData(123);
             setFirebaseInfo((prevState) => ({
                 ...prevState,
                 uid: result.user.uid,
