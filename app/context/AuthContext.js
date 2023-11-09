@@ -31,15 +31,17 @@ export const AuthContextProvider = ({children}) => {
             // console.log(result);
             // console.log(details);
             checkForUserInDb(result.user.uid, result.user.displayName, result.user.email);
-            TokenApi.getUserData(result.user.uid)
-                .then((res) => {
-                    console.log(res);
-                    if(!res) {
-                        TokenApi.addUserData(result.user)
-                    } else {
-                        console.log(`user already exists with id of ${res.id}`)
-                    }
-                })
+            
+            // TokenApi.getUserData(result.user.uid)
+            //     .then((res) => {
+            //         console.log(res);
+            //         if(!res) {
+            //             TokenApi.addUserData(result.user)
+            //         } else {
+            //             console.log(`user already exists with id of ${res.id}`)
+            //         }
+            //     })
+              
             // TokenApi.token = someFirebaseToken;
             // TokenApi.getUserData(123);
             setFirebaseInfo((prevState) => ({
@@ -77,46 +79,59 @@ export const AuthContextProvider = ({children}) => {
     }
 
     useEffect(() => {
-        const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+        const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
             console.log("currentUser is ", currentUser);
             setUser(currentUser);
-        })
-        return () => unsubscribe();
-    }, [user])
-
-    useEffect(() => {
-        if (user !== null) {
-            const snapshotUserInfoUnsubscribe = onSnapshot(doc(firestoreDb, "users", user.uid), (doc) => {
-                console.log("Current data: ", doc.data());
-                if (doc.data()) {
-                    let tempLatest, tempUpcoming, tempEmail, tempName = null;
-                    if (doc.data().latestDonation) {
-                        tempLatest = doc.data().latestDonation.toDate();
-                    } 
-                    if (doc.data().upcomingDonation) {
-                        tempUpcoming = doc.data().upcomingDonation.toDate();
-                    } 
-                    if (doc.data().email) {
-                        tempEmail = doc.data().email;
-                    }
-                    if (doc.data().name) {
-                        tempName = doc.data().name;
-                    }
-                    setFirebaseInfo((firebaseInfo) => ({
-                        ...firebaseInfo,
-                        uid: user.uid,
-                        name: tempName,
-                        latestDonation: tempLatest,
-                        upcomingDonation: tempUpcoming,
-                        email: tempEmail,
-                        allDonations: doc.data().allDonations,
-                    }))
+    
+            if (currentUser != null) {
+                console.log("Getting the IdToken");
+                try {
+                    const idToken = await currentUser.getIdToken(/* forceRefresh */ true);
+                    console.log("IdToken is ", idToken);
+                    TokenApi.token = idToken;
+                    await TokenApi.getUserData(currentUser);
+                } catch (err) {
+                    console.log(err);
                 }
-            });
+            }
+        });
+    
+        return () => unsubscribe();
+    }, [user]);
 
-            return () => snapshotUserInfoUnsubscribe();
-        }
-    }, [user])
+    // useEffect(() => {
+    //     if (user !== null) {
+    //         const snapshotUserInfoUnsubscribe = onSnapshot(doc(firestoreDb, "users", user.uid), (doc) => {
+    //             console.log("Current data: ", doc.data());
+    //             if (doc.data()) {
+    //                 let tempLatest, tempUpcoming, tempEmail, tempName = null;
+    //                 if (doc.data().latestDonation) {
+    //                     tempLatest = doc.data().latestDonation.toDate();
+    //                 } 
+    //                 if (doc.data().upcomingDonation) {
+    //                     tempUpcoming = doc.data().upcomingDonation.toDate();
+    //                 } 
+    //                 if (doc.data().email) {
+    //                     tempEmail = doc.data().email;
+    //                 }
+    //                 if (doc.data().name) {
+    //                     tempName = doc.data().name;
+    //                 }
+    //                 setFirebaseInfo((firebaseInfo) => ({
+    //                     ...firebaseInfo,
+    //                     uid: user.uid,
+    //                     name: tempName,
+    //                     latestDonation: tempLatest,
+    //                     upcomingDonation: tempUpcoming,
+    //                     email: tempEmail,
+    //                     allDonations: doc.data().allDonations,
+    //                 }))
+    //             }
+    //         });
+
+    //         return () => snapshotUserInfoUnsubscribe();
+    //     }
+    // }, [user])
 
     useEffect(() => {
         console.log("firebaseInfo has changed, it's now: ", firebaseInfo);
