@@ -21,6 +21,10 @@ export default function Donate() {
     const [confirmedAptFadeOut, setConfirmedAptFadeOut] = useState(false);
     const [confirmedAptFadeIn, setConfirmedAptFadeIn] = useState(false);
     const [stayOnScheduling, setStayOnScheduling] = useState(false);
+    
+    // Date saved in DynamoDB is string. Convert back to Date Object
+    const upcomingDonation = new Date(dynamoDBInfo.upcomingDonation);
+    const latestDonation = new Date(dynamoDBInfo.latestDonation);
 
     const cutDownDate = (longerDate) => {
         const wordsInArray = longerDate.toString().split(" ");
@@ -76,14 +80,14 @@ export default function Donate() {
     }
 
     const checkForUpcomingAndLatest = () => {
-        if (dynamoDBInfo.upcomingDonation) {
-            console.log(`User has an upcomingDonation at ${cutDownDate(dynamoDBInfo.upcomingDonation)}`);
-        } else if (dynamoDBInfo.latestDonation) {
-            console.log(`User's latestDonation is ${(cutDownDate(dynamoDBInfo.latestDonation))}`);
+        if (upcomingDonation) {
+            console.log(`User has an upcomingDonation at ${cutDownDate(upcomingDonation)}`);
+        } else if (latestDonation) {
+            console.log(`User's latestDonation is ${(cutDownDate(latestDonation))}`);
             setDonatedRecently(true);
-            setDonatedRecentlyDate(dynamoDBInfo.latestDonation);
+            setDonatedRecentlyDate(latestDonation);
         } else {
-            console.log("User has neither latest nor upcoming -Donation in DB");
+            console.log("Donation page.js -User has neither latest nor upcoming -Donation in DB");
         }
     }
 
@@ -103,9 +107,9 @@ export default function Donate() {
     
     return (
         <div className="bg-red-200 h-screen p-4">
-            {((user && dynamoDBInfo.upcomingDonation) && !stayOnScheduling)? 
-            <div>You have an upcoming appointment scheduled on {`${cutDownDate(dynamoDBInfo.upcomingDonation)}`}.</div>
-                : ((user && (!dynamoDBInfo.upcomingDonation || stayOnScheduling)) && (user && dynamoDBInfo.latestDonation)) ?
+            {((user && upcomingDonation) && !stayOnScheduling)? 
+            <div>You have an upcoming appointment scheduled on {`${cutDownDate(upcomingDonation)}`}.</div>
+                : ((user && (!upcomingDonation || stayOnScheduling)) && (user && latestDonation)) ?
                 <div>
                     <div className={`${confirmedAptFadeIn ? "animate-fadein" : "hidden"} flex flex-col justify-center items-center gap-4 text-xl`}>
                         <div className="text-2xl font-medium">Congratulations!</div>
@@ -149,7 +153,7 @@ export default function Donate() {
                         </div>
                     </div>
                 </div>
-                    : (user && (!dynamoDBInfo.upcomingDonation || stayOnScheduling)) ?
+                    : (user && (!upcomingDonation || stayOnScheduling)) ?
                     <div>
                         <div className={`${confirmedAptFadeIn ? "animate-fadein" : "hidden"} flex flex-col justify-center items-center gap-4 text-xl`}>
                             <div className="text-2xl font-medium">Congratulations!</div>

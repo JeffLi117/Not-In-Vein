@@ -45,7 +45,7 @@ export default function Navbar() {
 
     useEffect(() => {
         const checkAuthentication = async () => {
-            await new Promise((resolve) => setTimeout(resolve, 100));
+            await new Promise((resolve) => setTimeout(resolve, 500));
             setLoading(false);
         }
         checkAuthentication();

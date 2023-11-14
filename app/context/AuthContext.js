@@ -24,6 +24,8 @@ export const AuthContextProvider = ({children}) => {
     // }
 
     const googleSignIn = () => {
+        console.log('google signin run');
+        //  all we need from here is getting uid, email, displayname?
         const provider = new GoogleAuthProvider();
         signInWithPopup(auth, provider)
           .then((result) => {
@@ -46,7 +48,9 @@ export const AuthContextProvider = ({children}) => {
             // TokenApi.getUserData(123);
             setDynamoDBInfo((prevState) => ({
                 ...prevState,
-                uid: result.user.uid,
+                id: result.user.uid,
+                email: result.user.email,
+                name: result.user.displayName
             }));
             // snapshotUserInformation(result.user.uid, firebaseInfo, setFirebaseInfo);
           })
@@ -76,6 +80,7 @@ export const AuthContextProvider = ({children}) => {
 
     const userSignOut = () => {
         signOut(auth);
+        TokenApi.token = null;
     }
 
     useEffect(() => {
@@ -89,6 +94,7 @@ export const AuthContextProvider = ({children}) => {
                     const idToken = await currentUser.getIdToken(/* forceRefresh */ true);
                     console.log("IdToken is ", idToken);
                     TokenApi.token = idToken;
+                    // test if we get data back when new user sign in. Since returnValues added to register route now
                     const gottenUserData = await TokenApi.getUserData(currentUser);
                     console.log(gottenUserData);
                     setDynamoDBInfo(gottenUserData)
