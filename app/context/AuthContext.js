@@ -89,7 +89,8 @@ export const AuthContextProvider = ({children}) => {
                     const idToken = await currentUser.getIdToken(/* forceRefresh */ true);
                     console.log("IdToken is ", idToken);
                     TokenApi.token = idToken;
-                    await TokenApi.getUserData(currentUser);
+                    const gottenUserData = await TokenApi.getUserData(currentUser);
+                    console.log(gottenUserData);
                 } catch (err) {
                     console.log(err);
                 }

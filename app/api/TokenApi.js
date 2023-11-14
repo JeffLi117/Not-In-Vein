@@ -37,7 +37,13 @@ export default class TokenApi {
 
     static async addUserData(userData) {
         let res = await this.request(`register`, userData, "post");
-        console.log("🚀🚀 ~ file: TokenApi.js:51 ~ TokenApi ~ addUserData ~ res:", res)
+        console.log("🚀🚀 ~ file: TokenApi.js:40 ~ TokenApi ~ addUserData ~ res:", res)
+        return res;
+    }
+    
+    static async addUpcomingDate(userData) {
+        let res = await this.request(`adddate/${userData.uid}`, userData, "post");
+        console.log("🚀🚀 ~ file: TokenApi.js:46 ~ TokenApi ~ addUserData ~ res:", res)
         return res;
     }
 }
