@@ -7,11 +7,11 @@ import Link from 'next/link';
 import Image from 'next/image';
  
 export default function Profile() {
-  const {user, firebaseInfo} = UserAuth();
+  const {user, dynamoDBInfo} = UserAuth();
   const [loading, setLoading] = useState(true);
   console.log(user);
-  const upcomingDonation = firebaseInfo.upcomingDonation;
-  const latestDonation = firebaseInfo.latestDonation;
+  const upcomingDonation = dynamoDBInfo.upcomingDonation;
+  const latestDonation = dynamoDBInfo.latestDonation;
 
   useEffect(() => {
       const checkAuthentication = async () => {

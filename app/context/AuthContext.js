@@ -11,7 +11,7 @@ const AuthContext = createContext();
 
 export const AuthContextProvider = ({children}) => {
     const [user, setUser] = useState(null);
-    const [firebaseInfo, setFirebaseInfo] = useState({
+    const [dynamoDBInfo, setDynamoDBInfo] = useState({
         uid: null,
         latestDonation: null,
         upcomingDonation: null,
@@ -44,7 +44,7 @@ export const AuthContextProvider = ({children}) => {
               
             // TokenApi.token = someFirebaseToken;
             // TokenApi.getUserData(123);
-            setFirebaseInfo((prevState) => ({
+            setDynamoDBInfo((prevState) => ({
                 ...prevState,
                 uid: result.user.uid,
             }));
@@ -91,6 +91,7 @@ export const AuthContextProvider = ({children}) => {
                     TokenApi.token = idToken;
                     const gottenUserData = await TokenApi.getUserData(currentUser);
                     console.log(gottenUserData);
+                    setDynamoDBInfo(gottenUserData)
                 } catch (err) {
                     console.log(err);
                 }
@@ -135,11 +136,11 @@ export const AuthContextProvider = ({children}) => {
     // }, [user])
 
     useEffect(() => {
-        console.log("firebaseInfo has changed, it's now: ", firebaseInfo);
-    }, [firebaseInfo])
+        console.log("dynamoDBInfo has changed, it's now: ", dynamoDBInfo);
+    }, [dynamoDBInfo])
 
     return (
-        <AuthContext.Provider value={{user, googleSignIn, userSignOut, firebaseInfo, setFirebaseInfo, firebaseInfo}}>{children}</AuthContext.Provider>
+        <AuthContext.Provider value={{user, googleSignIn, userSignOut, dynamoDBInfo, setDynamoDBInfo}}>{children}</AuthContext.Provider>
     )
 }
 

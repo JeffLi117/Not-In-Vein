@@ -9,7 +9,7 @@ import { addRecentDonation, addUpcomingForRecent } from "../firebase/functions";
 import AddData from "../pages/adddata";
 
 export default function Donate() {
-    const { user, firebaseInfo } = UserAuth();
+    const { user, dynamoDBInfo } = UserAuth();
     const [donatedRecently, setDonatedRecently] = useState();
     const [donatedRecentlyDate, setDonatedRecentlyDate] = useState(new Date());
     const [scheduledDonationDate, setScheduledDonationDate] = useState(new Date());
@@ -76,12 +76,12 @@ export default function Donate() {
     }
 
     const checkForUpcomingAndLatest = () => {
-        if (firebaseInfo.upcomingDonation) {
-            console.log(`User has an upcomingDonation at ${cutDownDate(firebaseInfo.upcomingDonation)}`);
-        } else if (firebaseInfo.latestDonation) {
-            console.log(`User's latestDonation is ${(cutDownDate(firebaseInfo.latestDonation))}`);
+        if (dynamoDBInfo.upcomingDonation) {
+            console.log(`User has an upcomingDonation at ${cutDownDate(dynamoDBInfo.upcomingDonation)}`);
+        } else if (dynamoDBInfo.latestDonation) {
+            console.log(`User's latestDonation is ${(cutDownDate(dynamoDBInfo.latestDonation))}`);
             setDonatedRecently(true);
-            setDonatedRecentlyDate(firebaseInfo.latestDonation);
+            setDonatedRecentlyDate(dynamoDBInfo.latestDonation);
         } else {
             console.log("User has neither latest nor upcoming -Donation in DB");
         }
@@ -94,18 +94,18 @@ export default function Donate() {
     }, [donatedRecentlyDate])
 
     useEffect(() => {
-        if (firebaseInfo !== null) {
+        if (dynamoDBInfo !== null) {
             checkForUpcomingAndLatest();
         }
-    }, [firebaseInfo])
+    }, [dynamoDBInfo])
 
     // upcomingDonationReturned();
     
     return (
         <div className="bg-red-200 h-screen p-4">
-            {((user && firebaseInfo.upcomingDonation) && !stayOnScheduling)? 
-            <div>You have an upcoming appointment scheduled on {`${cutDownDate(firebaseInfo.upcomingDonation)}`}.</div>
-                : ((user && (!firebaseInfo.upcomingDonation || stayOnScheduling)) && (user && firebaseInfo.latestDonation)) ?
+            {((user && dynamoDBInfo.upcomingDonation) && !stayOnScheduling)? 
+            <div>You have an upcoming appointment scheduled on {`${cutDownDate(dynamoDBInfo.upcomingDonation)}`}.</div>
+                : ((user && (!dynamoDBInfo.upcomingDonation || stayOnScheduling)) && (user && dynamoDBInfo.latestDonation)) ?
                 <div>
                     <div className={`${confirmedAptFadeIn ? "animate-fadein" : "hidden"} flex flex-col justify-center items-center gap-4 text-xl`}>
                         <div className="text-2xl font-medium">Congratulations!</div>
@@ -149,7 +149,7 @@ export default function Donate() {
                         </div>
                     </div>
                 </div>
-                    : (user && (!firebaseInfo.upcomingDonation || stayOnScheduling)) ?
+                    : (user && (!dynamoDBInfo.upcomingDonation || stayOnScheduling)) ?
                     <div>
                         <div className={`${confirmedAptFadeIn ? "animate-fadein" : "hidden"} flex flex-col justify-center items-center gap-4 text-xl`}>
                             <div className="text-2xl font-medium">Congratulations!</div>
