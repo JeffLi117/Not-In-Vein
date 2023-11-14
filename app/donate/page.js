@@ -6,6 +6,7 @@ import SelectDate from "../components/SelectDate";
 import { add, setMilliseconds, setSeconds, setMinutes, setHours } from "date-fns";
 import { UserAuth } from "../context/AuthContext";
 import { addRecentDonation, addUpcomingForRecent } from "../firebase/functions";
+import AddData from "../pages/adddata";
 
 export default function Donate() {
     const { user, firebaseInfo } = UserAuth();
@@ -44,8 +45,7 @@ export default function Donate() {
             setRemindSchedule(true);
             return
         }
-        Promise.all([addRecentDonation(donatedRecentlyDate, user.uid), addUpcomingForRecent(scheduleDonatedRecently, user.uid)])
-            .then(console.log("Congrats on confirming your upcoming appointment! (with recent donation)"))
+        Promise.all([console.log("Congrats on confirming your upcoming appointment! (with recent donation)")])
             .then(setStayOnScheduling(true))
             .then(changeToConfirmedApt())
             .catch(function(err) {
@@ -56,8 +56,7 @@ export default function Donate() {
     }
 
     const confirmApt = async () => {
-        Promise.all([addUpcomingForRecent(scheduledDonationDate, user.uid)])
-            .then(console.log("Congrats on confirming your upcoming appointment!"))
+        Promise.all([console.log("Congrats on confirming your upcoming appointment!")])
             .then(setStayOnScheduling(true))
             .then(changeToConfirmedApt())
             .catch(function(err) {
@@ -139,7 +138,12 @@ export default function Donate() {
                             {cutDownDate(scheduleDonatedRecently) === cutDownDate(new Date()) ? null : 
                                 <div className="flex flex-col justify-center items-center gap-2">
                                     <div>Your next donation is scheduled to be {`${cutDownDate(scheduleDonatedRecently)}`}.</div>
-                                    <button onClick={() => confirmAptRecentDonation()} className="border p-2 min-w-[7%] border-red-600 border-2 rounded-full hover:border-black hover:bg-slate-200 hover:bg-red-600 transition ease-in-out">Confirm</button>
+                                    <AddData
+                                        passIntoFunct={confirmAptRecentDonation}
+                                        upcomingDate={scheduleDonatedRecently.toISOString()}
+                                        latestDate={donatedRecentlyDate.toISOString()}
+                                    />
+                                    {/* <button onClick={() => confirmAptRecentDonation()} className="border p-2 min-w-[7%] border-red-600 border-2 rounded-full hover:border-black hover:bg-slate-200 hover:bg-red-600 transition ease-in-out">Confirm</button> */}
                                 </div>
                             }
                         </div>
@@ -184,7 +188,12 @@ export default function Donate() {
                                     {cutDownDate(scheduleDonatedRecently) === cutDownDate(new Date()) ? null : 
                                         <div className="flex flex-col justify-center items-center gap-2">
                                             <div>Your next donation is scheduled to be {`${cutDownDate(scheduleDonatedRecently)}`}.</div>
-                                            <button onClick={() => confirmAptRecentDonation()} className="border p-2 min-w-[7%] border-red-600 border-2 rounded-full hover:border-black hover:bg-slate-200 hover:bg-red-600 transition ease-in-out">Confirm</button>
+                                            <AddData
+                                                passIntoFunct={confirmAptRecentDonation}
+                                                upcomingDate={scheduleDonatedRecently.toISOString()}
+                                                latestDate={donatedRecentlyDate.toISOString()}
+                                            />
+                                            {/* <button onClick={() => confirmAptRecentDonation()} className="border p-2 min-w-[7%] border-red-600 border-2 rounded-full hover:border-black hover:bg-slate-200 hover:bg-red-600 transition ease-in-out">Confirm</button> */}
                                         </div>
                                     }
                                 </div>
@@ -197,7 +206,12 @@ export default function Donate() {
                                         functionToPass={setScheduledDonationDate}
                                     />
                                     <div>Your next donation is scheduled to be {cutDownDate(scheduledDonationDate) === cutDownDate(new Date()) ? "today" : `${cutDownDate(scheduledDonationDate)}`}.</div>
-                                    <button onClick={() => confirmApt()} className="border p-2 min-w-[7%] border-red-600 border-2 rounded-full hover:border-black hover:bg-slate-200 hover:bg-red-600 transition ease-in-out">Confirm</button>
+                                    <AddData
+                                        passIntoFunct={confirmApt}
+                                        upcomingDate={scheduledDonationDate.toISOString()}
+                                        latestDate={null}
+                                    />
+                                    {/* <button onClick={() => confirmApt()} className="border p-2 min-w-[7%] border-red-600 border-2 rounded-full hover:border-black hover:bg-slate-200 hover:bg-red-600 transition ease-in-out">Confirm</button> */}
                                 </div>
                             }
                         </div>
