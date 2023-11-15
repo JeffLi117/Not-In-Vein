@@ -11,7 +11,7 @@ const AuthContext = createContext();
 
 export const AuthContextProvider = ({children}) => {
     const [user, setUser] = useState(null);
-    const [firebaseInfo, setFirebaseInfo] = useState({
+    const [dynamoDBInfo, setDynamoDBInfo] = useState({
         uid: null,
         latestDonation: null,
         upcomingDonation: null,
@@ -24,6 +24,8 @@ export const AuthContextProvider = ({children}) => {
     // }
 
     const googleSignIn = () => {
+        console.log('google signin run');
+        //  all we need from here is getting uid, email, displayname?
         const provider = new GoogleAuthProvider();
         signInWithPopup(auth, provider)
           .then((result) => {
@@ -44,9 +46,11 @@ export const AuthContextProvider = ({children}) => {
               
             // TokenApi.token = someFirebaseToken;
             // TokenApi.getUserData(123);
-            setFirebaseInfo((prevState) => ({
+            setDynamoDBInfo((prevState) => ({
                 ...prevState,
-                uid: result.user.uid,
+                id: result.user.uid,
+                email: result.user.email,
+                name: result.user.displayName
             }));
             // snapshotUserInformation(result.user.uid, firebaseInfo, setFirebaseInfo);
           })
@@ -76,6 +80,7 @@ export const AuthContextProvider = ({children}) => {
 
     const userSignOut = () => {
         signOut(auth);
+        TokenApi.token = null;
     }
 
     useEffect(() => {
@@ -89,8 +94,10 @@ export const AuthContextProvider = ({children}) => {
                     const idToken = await currentUser.getIdToken(/* forceRefresh */ true);
                     console.log("IdToken is ", idToken);
                     TokenApi.token = idToken;
+                    // test if we get data back when new user sign in. Since returnValues added to register route now
                     const gottenUserData = await TokenApi.getUserData(currentUser);
                     console.log(gottenUserData);
+                    setDynamoDBInfo(gottenUserData)
                 } catch (err) {
                     console.log(err);
                 }
@@ -135,11 +142,11 @@ export const AuthContextProvider = ({children}) => {
     // }, [user])
 
     useEffect(() => {
-        console.log("firebaseInfo has changed, it's now: ", firebaseInfo);
-    }, [firebaseInfo])
+        console.log("dynamoDBInfo has changed, it's now: ", dynamoDBInfo);
+    }, [dynamoDBInfo])
 
     return (
-        <AuthContext.Provider value={{user, googleSignIn, userSignOut, firebaseInfo, setFirebaseInfo, firebaseInfo}}>{children}</AuthContext.Provider>
+        <AuthContext.Provider value={{user, googleSignIn, userSignOut, dynamoDBInfo, setDynamoDBInfo}}>{children}</AuthContext.Provider>
     )
 }
 

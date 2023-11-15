@@ -9,9 +9,9 @@ import "react-datepicker/dist/react-datepicker.css";
 import RecentlyDonatedSelectDate from "../components/RecentDonatedSelectDate";
 
 export default function Reschedule(){
-    const {user, firebaseInfo} = UserAuth();
-    const upcomingDonation = firebaseInfo.upcomingDonation;
-    const latestDonation = firebaseInfo.latestDonation;
+    const {user, dynamoDBInfo} = UserAuth();
+    const upcomingDonation = new Date(dynamoDBInfo.upcomingDonation);
+    const latestDonation = new Date(dynamoDBInfo.latestDonation);
     const nextPossDonation =latestDonation? add(new Date(latestDonation), {days:57}): 0; 
     const [newUpcomingDate, setNewUpcomingDate] = useState(new Date());
     const [isConfirmed, setIsConfirmed] = useState(false);
