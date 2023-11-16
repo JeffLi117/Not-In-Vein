@@ -30,9 +30,10 @@ export const AuthContextProvider = ({children}) => {
         signInWithPopup(auth, provider)
           .then((result) => {
             const details = getAdditionalUserInfo(result);
-            // console.log(result);
+            console.log("result is ", result);
             // console.log(details);
-            checkForUserInDb(result.user.uid, result.user.displayName, result.user.email);
+            // checkForUserInDb is for Firebase
+            // checkForUserInDb(result.user.uid, result.user.displayName, result.user.email);
             
             // TokenApi.getUserData(result.user.uid)
             //     .then((res) => {
@@ -89,14 +90,20 @@ export const AuthContextProvider = ({children}) => {
             setUser(currentUser);
     
             if (currentUser != null) {
-                console.log("Getting the IdToken");
+                // console.log("Getting the IdToken");
                 try {
                     const idToken = await currentUser.getIdToken(/* forceRefresh */ true);
-                    console.log("IdToken is ", idToken);
+                    // console.log("IdToken is ", idToken);
                     TokenApi.token = idToken;
                     // test if we get data back when new user sign in. Since returnValues added to register route now
-                    const gottenUserData = await TokenApi.getUserData(currentUser);
-                    console.log(gottenUserData);
+                    let gottenUserData = await TokenApi.getUserData(currentUser);
+                    if(!gottenUserData) {
+                        await TokenApi.addUserData(currentUser);
+                        gottenUserData = await TokenApi.getUserData(currentUser);
+                    } else {
+                        console.log(`user already exists`)
+                    }
+                    console.log("gottenUserData is ", gottenUserData);
                     setDynamoDBInfo(gottenUserData)
                 } catch (err) {
                     console.log(err);
@@ -106,40 +113,6 @@ export const AuthContextProvider = ({children}) => {
     
         return () => unsubscribe();
     }, [user]);
-
-    // useEffect(() => {
-    //     if (user !== null) {
-    //         const snapshotUserInfoUnsubscribe = onSnapshot(doc(firestoreDb, "users", user.uid), (doc) => {
-    //             console.log("Current data: ", doc.data());
-    //             if (doc.data()) {
-    //                 let tempLatest, tempUpcoming, tempEmail, tempName = null;
-    //                 if (doc.data().latestDonation) {
-    //                     tempLatest = doc.data().latestDonation.toDate();
-    //                 } 
-    //                 if (doc.data().upcomingDonation) {
-    //                     tempUpcoming = doc.data().upcomingDonation.toDate();
-    //                 } 
-    //                 if (doc.data().email) {
-    //                     tempEmail = doc.data().email;
-    //                 }
-    //                 if (doc.data().name) {
-    //                     tempName = doc.data().name;
-    //                 }
-    //                 setFirebaseInfo((firebaseInfo) => ({
-    //                     ...firebaseInfo,
-    //                     uid: user.uid,
-    //                     name: tempName,
-    //                     latestDonation: tempLatest,
-    //                     upcomingDonation: tempUpcoming,
-    //                     email: tempEmail,
-    //                     allDonations: doc.data().allDonations,
-    //                 }))
-    //             }
-    //         });
-
-    //         return () => snapshotUserInfoUnsubscribe();
-    //     }
-    // }, [user])
 
     useEffect(() => {
         console.log("dynamoDBInfo has changed, it's now: ", dynamoDBInfo);

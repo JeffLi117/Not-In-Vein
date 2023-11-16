@@ -20,9 +20,9 @@ const alegreya = Alegreya({
 export default function page() {
   return (
     <div className="bg-red-200 h-screen p-4 flex justify-center items-start">
-        <div className="flex flex-col justify-center items-center gap-4 w-1/2 text-center">
-            <h1 className={`text-3xl ${alegreya.className} font-medium`}>About Us</h1>
-            <p>Not In Vein (NIV) was built to make it easier for people to schedule blood donations.</p>
+        <div className="flex flex-col justify-center items-center gap-4 w-1/2 text-center text-xl">
+            <h1 className={`text-4xl ${alegreya.className} font-bold`}>About Us</h1>
+            <p className="text-2xl font-medium">Not In Vein (NIV) was built to make it easier for people to schedule blood donations.</p>
             <p>
                 Whether it&apos;s reminding you of an upcoming appointment or helping you find nearby donation options,
                 NIV can do that for you. We&apos;ll also be able to save important information such as your most visited locations,

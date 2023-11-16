@@ -23,7 +23,7 @@ export default function Profile() {
     
     console.log(user);
     return (
-        <div className="mt-10 justify-center items-center w-10/12 mx-auto">
+        <div className="bg-red-200 h-screen justify-center items-center p-4">
           {loading ? 
             <p>Loading...</p>
           : !user ? (

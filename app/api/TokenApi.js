@@ -24,14 +24,8 @@ export default class TokenApi {
     }
 
     static async getUserData(userData){
-        console.log(this.token);
         let res = await this.request(`users/${userData.uid}`);
         console.log("🚀 ~ file: TokenApi.js:28 ~ TokenApi ~ getUserData ~ res:", res)
-        if(!res) {
-            this.addUserData(userData)
-        } else {
-            console.log(`user already exists`)
-        }
         return res[0];
     }
 

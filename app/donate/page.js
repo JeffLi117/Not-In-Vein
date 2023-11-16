@@ -7,6 +7,7 @@ import { add, setMilliseconds, setSeconds, setMinutes, setHours } from "date-fns
 import { UserAuth } from "../context/AuthContext";
 import { addRecentDonation, addUpcomingForRecent } from "../firebase/functions";
 import AddData from "../pages/adddata";
+import { DynamoDB } from "@aws-sdk/client-dynamodb";
 
 export default function Donate() {
     const { user, dynamoDBInfo } = UserAuth();
@@ -23,8 +24,11 @@ export default function Donate() {
     const [stayOnScheduling, setStayOnScheduling] = useState(false);
     
     // Date saved in DynamoDB is string. Convert back to Date Object
-    const upcomingDonation = new Date(dynamoDBInfo.upcomingDonation);
-    const latestDonation = new Date(dynamoDBInfo.latestDonation);
+    let upcomingDonation, latestDonation;
+    // const upcomingDonation = new Date(dynamoDBInfo.upcomingDonation);
+    // const latestDonation = new Date(dynamoDBInfo.latestDonation);
+    if (dynamoDBInfo.upcomingDonation) upcomingDonation = dynamoDBInfo.upcomingDonation;
+    if (dynamoDBInfo.latestDonation) latestDonation = dynamoDBInfo.latestDonation;
 
     const cutDownDate = (longerDate) => {
         const wordsInArray = longerDate.toString().split(" ");
@@ -108,7 +112,7 @@ export default function Donate() {
     return (
         <div className="bg-red-200 h-screen p-4">
             {((user && upcomingDonation) && !stayOnScheduling)? 
-            <div>You have an upcoming appointment scheduled on {`${cutDownDate(upcomingDonation)}`}.</div>
+            <div className="text-2xl font-medium flex flex-col justify-center items-center">You have an upcoming appointment scheduled on {`${cutDownDate(new Date(upcomingDonation))}`}.</div>
                 : ((user && (!upcomingDonation || stayOnScheduling)) && (user && latestDonation)) ?
                 <div>
                     <div className={`${confirmedAptFadeIn ? "animate-fadein" : "hidden"} flex flex-col justify-center items-center gap-4 text-xl`}>
@@ -221,9 +225,9 @@ export default function Donate() {
                         </div>
                     </div>
                         : (user || user == null) ? 
-                        <div>Loading...</div>
+                        <div className="text-2xl font-medium flex flex-col justify-center items-center">Loading...</div>
                             : 
-                            <div>Please login to schedule your appointment!</div>
+                            <div className="text-2xl font-medium flex flex-col justify-center items-center">Please login to schedule your appointment!</div>
             }
         </div>
     )
