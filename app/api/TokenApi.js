@@ -23,20 +23,24 @@ export default class TokenApi {
         }
     }
 
+    //  == get user data == //
+    // handling for if user does not exist (and needs to be added) is done within AuthContext
     static async getUserData(userData){
         let res = await this.request(`users/${userData.uid}`);
         console.log("🚀 ~ file: TokenApi.js:28 ~ TokenApi ~ getUserData ~ res:", res)
         return res[0];
     }
 
+    //  == add user data == //
     static async addUserData(userData) {
         let res = await this.request(`register`, userData, "post");
         console.log("🚀🚀 ~ file: TokenApi.js:40 ~ TokenApi ~ addUserData ~ res:", res)
         return res;
     }
     
-    static async addUpcomingDate(userData) {
-        let res = await this.request(`adddate/${userData.uid}`, userData, "post");
+    //  == add upcoming donation == //
+    static async addUpcomingDonation(userData) {
+        let res = await this.request(`adddonation/${userData.uid}`, userData, "post");
         console.log("🚀🚀 ~ file: TokenApi.js:46 ~ TokenApi ~ addUserData ~ res:", res)
         return res;
     }
