@@ -3,8 +3,10 @@ import MapComponent from "../components/Map";
 import React, { useState, useEffect } from "react";
 import { GoogleMap, useLoadScript, InfoWindow } from "@react-google-maps/api";
 import { setDefaults, geocode, RequestType }  from "react-geocode";
+import 'dotenv/config';
+
 setDefaults({
-  key: "MY_KEY_HERE",
+  key: process.env.NEXT_PUBLIC_GOOGLE_API_KEY_1,
   language: "en", // Default language for responses.
   region: "es", // Default region for responses.
 })
@@ -39,7 +41,7 @@ const MyMap = () => {
   };
 
   const { isLoaded, loadError } = useLoadScript({
-    googleMapsApiKey: "MY_KEY_HERE",
+    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_API_KEY_2,
     libraries,
     onLoad: () => setMapLoaded(true),
   });
@@ -115,6 +117,8 @@ const handleSearchBloodCenters = async (e) => {
     });
   };
 
+  const windowFeatures = "noreferrer, noopener";
+
   if (loadError) {
     return <div>Error loading Google Maps</div>;
   }
@@ -156,10 +160,14 @@ const handleSearchBloodCenters = async (e) => {
                 setSelectedMarker(null);
               }}
             >
-                <div>
-                    <p>{selectedMarker.title}</p>
+                <div className="text-black orange-300 flex flex-col justify-center items-start gap-1">
+                    <p className="font-medium">{selectedMarker.title}</p>
                     <p>{selectedMarker.address}</p>
-                    <a href={`http://maps.google.com/?q=${selectedMarker.address}`}><button>Get Directions</button></a>
+                    <button className="transition text-white ease-in-out border border-2 border-black bg-black p-1 m-1 rounded-md hover:border-gray-700 hover:bg-gray-700"
+                    onClick={() => window.open(`http://maps.google.com/?q=${selectedMarker.title}_${selectedMarker.address}`, '_blank', windowFeatures)}
+                    >
+                        Get Directions
+                    </button>
                 </div>
             </InfoWindow>
         )}
