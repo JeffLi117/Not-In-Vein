@@ -1,4 +1,5 @@
 import { Nunito, Alegreya } from 'next/font/google';
+import Link from 'next/link';
 
 const landingPageSentences = [
   "DONATE TODAY",
@@ -28,7 +29,11 @@ export default function Home() {
           <div className="text-2xl font-bold">{landingPageSentences[0]}</div>
           <div className="text-6xl">{landingPageSentences[1]}</div>
           <div className="text-2xl">{landingPageSentences[2]}</div>
-          <button className="border p-2 border-red-600 border-2 rounded-full hover:border-black hover:bg-slate-200 hover:bg-red-600 hover:text-white transition ease-in-out">Find a blood drive near you</button>
+          <Link href="/locate">
+            <button className="border p-2 border-red-600 border-2 rounded-full hover:border-black hover:bg-slate-200 hover:bg-red-600 transition ease-in-out">
+              Find a blood drive near you
+            </button>
+          </Link>
         </div>
       </div>
     </div>
