@@ -54,13 +54,6 @@ export default function Reschedule(){
                     </span>
                         The earliest your next donation can be is {`${cutDownDate(nextPossDonation)}`}.
                     </p>
-                    {/* <DatePicker 
-                        selected={isPast(nextPossDonation)?new Date() :nextPossDonation} 
-                        value={isPast(nextPossDonation)?new Date() :nextPossDonation}
-                        onChange={(value) => handlePassingFunct(value)} 
-                        minDate={isPast(nextPossDonation)?new Date() :nextPossDonation}
-                        className="text-center border-l-4 border-red-600 w-full p-3 rounded text-sm  outline-none  focus:ring-0 bg-white"
-                    /> */}
                     {/* <RecentlyDonatedSelectDate
                         dateToPass={nextPossDonation}
                         functionToPass={setNewUpcomingDate}
