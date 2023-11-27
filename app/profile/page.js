@@ -9,10 +9,10 @@ import Image from 'next/image';
 export default function Profile() {
   const {user, dynamoDBInfo} = UserAuth();
   const [loading, setLoading] = useState(true);
-  console.log(user);
+  // console.log(user);
   const upcomingDonation = new Date(dynamoDBInfo.upcomingDonation);
   const latestDonation = new Date(dynamoDBInfo.latestDonation);
-  console.log("🚀 ~ file: page.js:14 ~ Profile ~ upcomingDonation:", upcomingDonation)
+  // console.log("🚀 ~ file: page.js:14 ~ Profile ~ upcomingDonation:", upcomingDonation)
   useEffect(() => {
       const checkAuthentication = async () => {
           await new Promise((resolve) => setTimeout(resolve, 100));
@@ -21,7 +21,7 @@ export default function Profile() {
       checkAuthentication();
   }, [user])
     
-    console.log(user);
+    // console.log(user);
     return (
         <div className="bg-red-200 h-screen justify-center items-center p-4">
           {loading ? 
@@ -32,7 +32,7 @@ export default function Profile() {
             </div>
           ): 
           (
-          <div>
+          <div className="max-w-screen-md mx-auto mt-5">
             <header className="flex flex-col sm:flex-row items-center text-center sm:text-left">
                 <div className="pb-5 sm:pr-10">
                 <img 
@@ -72,7 +72,7 @@ function ShowDonationCountDown({date}){
             <span className="block text-3xl pb-5">{formatDistanceToNowStrict(date)}</span>
             until upcoming donation date: {cutDownDate(date)}
           </h2>
-          <Link href="/reschedule">
+          <Link href="/reschedule" className="flex justify-center sm:block">
           <button className="mt-5 block py-2 px-3 rounded-md font-semibold bg-red-400 text-white hover:bg-red-600">
             Reschedule
           </button>
@@ -85,7 +85,7 @@ function ShowDonationCountDown({date}){
       <h2 className="text-xl font-bold">
         Today is your donation day!
       </h2>
-      <Link href="/reschedule">
+      <Link href="/reschedule" className="flex justify-center sm:justify-start">
         <button className="mt-5 block py-2 px-3 rounded-md font-semibold bg-red-400 text-white hover:bg-red-600">
           Reschedule
         </button>
