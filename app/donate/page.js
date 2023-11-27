@@ -60,7 +60,7 @@ export default function Donate() {
                 console.log("Some error occurred :(", err.message)
             })
         // addRecentDonation(donatedRecentlyDate, user.uid); params: recentDate, userId
-        // addUpcomingForRecent(scheduleDonatedRecently, user.uid); params: upcomingDate, userId
+        // addUpcomingForRecent(scheduleDonatedRecently, user.uid); params: upcomingDonation, userId
     }
 
     const confirmApt = async () => {
@@ -71,7 +71,7 @@ export default function Donate() {
                 console.log("Some error occurred :(", err.message)
             })
         // addRecentDonation(donatedRecentlyDate, user.uid); params: recentDate, userId
-        // addUpcomingForRecent(scheduleDonatedRecently, user.uid); params: upcomingDate, userId
+        // addUpcomingForRecent(scheduleDonatedRecently, user.uid); params: upcomingDonation, userId
     }
 
     const changeToConfirmedApt = async () => {
@@ -148,8 +148,8 @@ export default function Donate() {
                                     <div>Your next donation is scheduled to be {`${cutDownDate(scheduleDonatedRecently)}`}.</div>
                                     <AddData
                                         passIntoFunct={confirmAptRecentDonation}
-                                        upcomingDate={scheduleDonatedRecently.toISOString()}
-                                        latestDate={donatedRecentlyDate.toISOString()}
+                                        upcomingDonation={scheduleDonatedRecently.toISOString()}
+                                        latestDonation={donatedRecentlyDate.toISOString()}
                                     />
                                     {/* <button onClick={() => confirmAptRecentDonation()} className="border p-2 min-w-[7%] border-red-600 border-2 rounded-full hover:border-black hover:bg-slate-200 hover:bg-red-600 transition ease-in-out">Confirm</button> */}
                                 </div>
@@ -198,8 +198,8 @@ export default function Donate() {
                                             <div>Your next donation is scheduled to be {`${cutDownDate(scheduleDonatedRecently)}`}.</div>
                                             <AddData
                                                 passIntoFunct={confirmAptRecentDonation}
-                                                upcomingDate={scheduleDonatedRecently.toISOString()}
-                                                latestDate={donatedRecentlyDate.toISOString()}
+                                                upcomingDonation={scheduleDonatedRecently.toISOString()}
+                                                latestDonation={donatedRecentlyDate.toISOString()}
                                             />
                                             {/* <button onClick={() => confirmAptRecentDonation()} className="border p-2 min-w-[7%] border-red-600 border-2 rounded-full hover:border-black hover:bg-slate-200 hover:bg-red-600 transition ease-in-out">Confirm</button> */}
                                         </div>
@@ -216,8 +216,8 @@ export default function Donate() {
                                     <div>Your next donation is scheduled to be {cutDownDate(scheduledDonationDate) === cutDownDate(new Date()) ? "today" : `${cutDownDate(scheduledDonationDate)}`}.</div>
                                     <AddData
                                         passIntoFunct={confirmApt}
-                                        upcomingDate={scheduledDonationDate.toISOString()}
-                                        latestDate={null}
+                                        upcomingDonation={scheduledDonationDate.toISOString()}
+                                        latestDonation={null}
                                     />
                                     {/* <button onClick={() => confirmApt()} className="border p-2 min-w-[7%] border-red-600 border-2 rounded-full hover:border-black hover:bg-slate-200 hover:bg-red-600 transition ease-in-out">Confirm</button> */}
                                 </div>
