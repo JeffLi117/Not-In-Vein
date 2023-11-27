@@ -112,7 +112,7 @@ export default function Donate() {
     /*=====Note =====
     Currently even if the upcomingdate is past, the page shows "You have an upcoming scheduled on ..." We can make a modal or a page to show if upcoming date is past. If a user donated on that day, we will make that upcomingdate as latest, if a user did not donate, we will delete upcomingdate.
     */
-
+    
     
     return (
         <div className="bg-red-200 h-screen p-4">
@@ -153,8 +153,8 @@ export default function Donate() {
                                     <div>Your next donation is scheduled to be {`${cutDownDate(scheduleDonatedRecently)}`}.</div>
                                     <AddData
                                         passIntoFunct={confirmAptRecentDonation}
-                                        upcomingDate={scheduleDonatedRecently.toISOString()}
-                                        latestDate={donatedRecentlyDate.toISOString()}
+                                        upcomingDonation={scheduleDonatedRecently.toISOString()}
+                                        latestDonation={donatedRecentlyDate.toISOString()}
                                     />
                                     {/* <button onClick={() => confirmAptRecentDonation()} className="border p-2 min-w-[7%] border-red-600 border-2 rounded-full hover:border-black hover:bg-slate-200 hover:bg-red-600 transition ease-in-out">Confirm</button> */}
                                 </div>
@@ -203,8 +203,8 @@ export default function Donate() {
                                             <div>Your next donation is scheduled to be {`${cutDownDate(scheduleDonatedRecently)}`}.</div>
                                             <AddData
                                                 passIntoFunct={confirmAptRecentDonation}
-                                                upcomingDate={scheduleDonatedRecently.toISOString()}
-                                                latestDate={donatedRecentlyDate.toISOString()}
+                                                upcomingDonation={scheduleDonatedRecently.toISOString()}
+                                                latestDonation={donatedRecentlyDate.toISOString()}
                                             />
                                             {/* <button onClick={() => confirmAptRecentDonation()} className="border p-2 min-w-[7%] border-red-600 border-2 rounded-full hover:border-black hover:bg-slate-200 hover:bg-red-600 transition ease-in-out">Confirm</button> */}
                                         </div>
@@ -221,8 +221,8 @@ export default function Donate() {
                                     <div>Your next donation is scheduled to be {cutDownDate(scheduledDonationDate) === cutDownDate(new Date()) ? "today" : `${cutDownDate(scheduledDonationDate)}`}.</div>
                                     <AddData
                                         passIntoFunct={confirmApt}
-                                        upcomingDate={scheduledDonationDate.toISOString()}
-                                        latestDate={null}
+                                        upcomingDonation={scheduledDonationDate.toISOString()}
+                                        latestDonation={null}
                                     />
                                     {/* <button onClick={() => confirmApt()} className="border p-2 min-w-[7%] border-red-600 border-2 rounded-full hover:border-black hover:bg-slate-200 hover:bg-red-600 transition ease-in-out">Confirm</button> */}
                                 </div>

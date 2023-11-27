@@ -1,4 +1,4 @@
-"use client"
+// "use client"
 import './globals.css';
 import { AuthContextProvider } from './context/AuthContext';
 import Navbar from './components/Navbar';

@@ -40,11 +40,11 @@ export default function Reschedule(){
     return (
         <main className="bg-red-200 h-screen pt-10">
             <h1 className="text-center text-xl font-bold m-5">Reschedule your donation date</h1>
-            <div className={`${isConfirmed ? "block" : "hidden"} text-center delay-700`}>
+            <div className={`${isConfirmed ? "animate-fadein" : "hidden"} text-center duration-300 delay-1000`}>
                 <h2>Congratulations!</h2>
                 <p>Your appointment has been confirmed for {`${cutDownDate(newUpcomingDate)}`}</p>
             </div>
-            <div className={`${isConfirmed ? "hidden" : "block"} text-center `}>
+            <div className={`${isConfirmed ? "animate-fadeout" : "block"} text-center duration-300`}>
             {latestDonation?
             (
                 <div>
