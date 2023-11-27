@@ -1,4 +1,4 @@
-
+"use client"
 import './globals.css';
 import { AuthContextProvider } from './context/AuthContext';
 import Navbar from './components/Navbar';
@@ -13,8 +13,7 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <head>
         <link
-          href="https://api.mapbox.com/mapbox-gl-js/v1.10.1/mapbox-gl.css"
-          rel="stylesheet"
+          href='https://api.tiles.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.css' rel='stylesheet' 
         />
       </head>
       <body>
