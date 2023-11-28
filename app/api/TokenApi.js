@@ -44,4 +44,11 @@ export default class TokenApi {
         console.log("🚀🚀 ~ file: TokenApi.js:46 ~ TokenApi ~ addUserData ~ res:", res)
         return res;
     }
+
+    // == update upcoming donation ==//
+    static async updateUpcomingDonation(userData, userid) {
+        let res = await this.request(`updatedonation/${userid}`, userData, "patch");
+        console.log("🚀🚀 ~ file: TokenApi.js:46 ~ TokenApi ~ addUserData ~ res:", res)
+        return res;
+    }
 }

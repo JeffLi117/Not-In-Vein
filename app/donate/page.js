@@ -23,7 +23,7 @@ export default function Donate() {
     const [confirmedAptFadeIn, setConfirmedAptFadeIn] = useState(false);
     const [stayOnScheduling, setStayOnScheduling] = useState(false);
     
-    // Date saved in DynamoDB is string. Convert back to Date Object
+    // Date saved in DynamoDB is string. It needs to be converted back to Date Object
     let upcomingDonation, latestDonation;
     // const upcomingDonation = new Date(dynamoDBInfo.upcomingDonation);
     // const latestDonation = new Date(dynamoDBInfo.latestDonation);
@@ -108,6 +108,11 @@ export default function Donate() {
     }, [dynamoDBInfo])
 
     // upcomingDonationReturned();
+
+    /*=====Note =====
+    Currently even if the upcomingdate is past, the page shows "You have an upcoming scheduled on ..." We can make a modal or a page to show if upcoming date is past. If a user donated on that day, we will make that upcomingdate as latest, if a user did not donate, we will delete upcomingdate.
+    */
+    
     
     return (
         <div className="bg-red-200 h-screen p-4">
