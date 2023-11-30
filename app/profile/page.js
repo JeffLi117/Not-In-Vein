@@ -74,7 +74,7 @@ export default function Profile() {
                   <div className="flex flex-col justify-start items-start gap-1">
                     <div className="flex justify-start items-center gap-1">
                       <h2 className="text-xl font-bold">Email Notification Settings</h2>
-                      <div className={`${emailQuestion ? "bg-white" : ""} transition ease-in-out p-1 rounded-full`}>
+                      <div className={`${(emailQuestion && !openSettings) ? "bg-white" : ""} transition ease-in-out p-1 rounded-full`}>
                         <FaQuestionCircle 
                           className="text-sm z-20 rounded-full" 
                           onClick={() => setEmailQuestion(!emailQuestion)}
@@ -82,9 +82,9 @@ export default function Profile() {
                       </div>
                     </div>
                     
-                    <div>{user.emailSettings ? user.emailSettings : "Default"}</div>
+                    <div>Current setting: {user.emailSettings ? user.emailSettings : "Default"}</div>
                     {openSettings ? 
-                      <div>
+                      <div className="flex justify-start items-center gap-2">
                         <button className="mt-2 block py-2 px-3 rounded-md font-semibold bg-red-400 text-white hover:bg-red-600" onClick={handleSaveSettings}>Save Changes</button>
                         <button className="mt-2 block py-2 px-3 rounded-md font-semibold bg-red-400 text-white hover:bg-red-600" onClick={() => setOpenSettings(false)}>Cancel</button>
                       </div> 
@@ -92,15 +92,21 @@ export default function Profile() {
                       <button className="mt-2 block py-2 px-3 rounded-md font-semibold bg-red-400 text-white hover:bg-red-600" onClick={() => setOpenSettings(true)}>Change Settings</button>
                     }
                   </div>
-                  {emailQuestion && <ul className="text-xs rounded-md p-2 bg-white">
+                  {(emailQuestion && !openSettings) && <ul className="text-xs rounded-md p-2 bg-white">
                     {emailFrequency.map((el) => {
                       return <li key={el.freqType}>
                         <span className="font-semibold">{el.freqType}</span>: {el.description}
                         </li>
                     })}
                   </ul>}
+                  {openSettings && <ul>
+                    {emailFrequency.map((el) => {
+                      return <li key={el.freqType} className="p-1 hover:bg-white transition ease-in-out">
+                        <span className="font-semibold">{el.freqType}</span>: {el.description}
+                        </li>
+                    })}
+                  </ul>}
                 </div>
-                
               </section>
             </main>
           </div>
