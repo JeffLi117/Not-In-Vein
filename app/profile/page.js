@@ -5,11 +5,19 @@ import cutDownDate from "../components/helpers";
 import { formatDistanceToNowStrict, isToday, isFuture } from 'date-fns';
 import Link from 'next/link';
 import { FaQuestionCircle } from "react-icons/fa";
+
+const emailFrequency = [
+  {freqType: "Default", description: "Receive a reminder 1 week before, 1 day before, and the morning of your upcoming donation!"},
+  {freqType: "Weekly", description: "On top of the default frequency, receive an additional reminder for your upcoming donation on Monday of every week!"},
+  {freqType: "Monthly", description: "On top of the default frequency, receive an additional for your upcoming donation on the first day of every month!"},
+  {freqType: "WeekOf", description: "Receive a reminder every day for the week leading up to your upcoming donation!"},
+]
  
 export default function Profile() {
   const {user, dynamoDBInfo} = UserAuth();
   const [loading, setLoading] = useState(true);
   const [openSettings, setOpenSettings] = useState(false);
+  const [emailQuestion, setEmailQuestion] = useState(false);
   // console.log(user);
   const upcomingDonation = new Date(dynamoDBInfo.upcomingDonation);
   const latestDonation = new Date(dynamoDBInfo.latestDonation);
@@ -61,21 +69,39 @@ export default function Profile() {
                   <li>💉</li>
                 </ul>
               </section>
-              <div className="relative flex flex-col justify-start items-start">
-                <div className="flex justify-start items-center gap-1">
-                  <h2 className="text-xl font-bold">Email Notification Settings</h2>
-                  <FaQuestionCircle className="text-sm" /> 
+              <section className="flex w-full flex-col justify-start items-start">
+                <div className="grid w-full grid-cols-[40%,60%]">
+                  <div className="flex flex-col justify-start items-start gap-1">
+                    <div className="flex justify-start items-center gap-1">
+                      <h2 className="text-xl font-bold">Email Notification Settings</h2>
+                      <div className={`${emailQuestion ? "bg-white" : ""} transition ease-in-out p-1 rounded-full`}>
+                        <FaQuestionCircle 
+                          className="text-sm z-20 rounded-full" 
+                          onClick={() => setEmailQuestion(!emailQuestion)}
+                        /> 
+                      </div>
+                    </div>
+                    
+                    <div>{user.emailSettings ? user.emailSettings : "Default"}</div>
+                    {openSettings ? 
+                      <div>
+                        <button className="mt-2 block py-2 px-3 rounded-md font-semibold bg-red-400 text-white hover:bg-red-600" onClick={handleSaveSettings}>Save Changes</button>
+                        <button className="mt-2 block py-2 px-3 rounded-md font-semibold bg-red-400 text-white hover:bg-red-600" onClick={() => setOpenSettings(false)}>Cancel</button>
+                      </div> 
+                    : 
+                      <button className="mt-2 block py-2 px-3 rounded-md font-semibold bg-red-400 text-white hover:bg-red-600" onClick={() => setOpenSettings(true)}>Change Settings</button>
+                    }
+                  </div>
+                  {emailQuestion && <ul className="text-xs rounded-md p-2 bg-white">
+                    {emailFrequency.map((el) => {
+                      return <li key={el.freqType}>
+                        <span className="font-semibold">{el.freqType}</span>: {el.description}
+                        </li>
+                    })}
+                  </ul>}
                 </div>
-                <div>{user.emailSettings ? user.emailSettings : "Default"}</div>
-                {openSettings ? 
-                  <div>
-                    <button className="mt-2 block py-2 px-3 rounded-md font-semibold bg-red-400 text-white hover:bg-red-600" onClick={handleSaveSettings}>Save Changes</button>
-                    <button className="mt-2 block py-2 px-3 rounded-md font-semibold bg-red-400 text-white hover:bg-red-600" onClick={() => setOpenSettings(false)}>Cancel</button>
-                  </div> 
-                : 
-                  <button className="mt-2 block py-2 px-3 rounded-md font-semibold bg-red-400 text-white hover:bg-red-600" onClick={() => setOpenSettings(true)}>Change Settings</button>
-                }
-              </div>
+                
+              </section>
             </main>
           </div>
           )
