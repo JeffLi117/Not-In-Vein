@@ -20,13 +20,18 @@ export default function Profile() {
   const [openSettings, setOpenSettings] = useState(false);
   const [emailQuestion, setEmailQuestion] = useState(false);
   const [emailSelection, setEmailSelection] = useState(null);
+  const [savedSetting, setSavedSetting] = useState(null);
   // console.log(user);
   const upcomingDonation = new Date(dynamoDBInfo.upcomingDonation);
   const latestDonation = new Date(dynamoDBInfo.latestDonation);
   // console.log("🚀 ~ file: page.js:14 ~ Profile ~ upcomingDonation:", upcomingDonation)
   const handleSaveSettings = async () => {
     // logic to save settings
-    setOpenSettings(false);
+    setOpenSettings(false); 
+    setEmailQuestion(false);
+
+    // Log the selected email frequency
+    setSavedSetting(emailSelection);
   }
 
   useEffect(() => {
@@ -37,8 +42,9 @@ export default function Profile() {
       checkAuthentication();
   }, [user])
 
-  const handleEmailSelection = (str) => {
-    setEmailSelection(str)
+  const handleEmailSelection = (event) => {
+    const selectedValue = event.target.value;
+    setEmailSelection(selectedValue);
   }
     
     // console.log(user);
@@ -78,7 +84,7 @@ export default function Profile() {
                 </ul>
               </section>
               <section className="flex w-full flex-col justify-start items-start">
-                <div className="grid w-full grid-cols-[30%,70%]">
+                <div className="grid w-full grid-cols-[30%,70%] grid-rows-2">
                   <div className="flex flex-col justify-start items-start gap-2">
                     <div className="flex justify-start items-center gap-1">
                       <h2 className="text-xl font-bold">Email Notification Settings</h2>
@@ -89,29 +95,31 @@ export default function Profile() {
                         /> 
                       </div>
                     </div>
-                    <div>Current setting: {user.emailSettings ? user.emailSettings : "Default"}</div>
+                    {savedSetting ? <div>Your setting has been updated to: {savedSetting}</div> : <div>Current setting: {user.emailSettings ? user.emailSettings : "Default"}</div>}
+                    
                     {openSettings ? 
                       <div className="flex justify-start items-center gap-2">
                         <button className="mt-2 block py-2 px-3 rounded-md font-semibold bg-red-400 text-white hover:bg-red-600" onClick={handleSaveSettings}>Save Changes</button>
-                        <button className="mt-2 block py-2 px-3 rounded-md font-semibold bg-red-400 text-white hover:bg-red-600" onClick={() => setOpenSettings(false)}>Cancel</button>
+                        <button className="mt-2 block py-2 px-3 rounded-md font-semibold bg-red-400 text-white hover:bg-red-600" onClick={() => {setOpenSettings(false); setEmailQuestion(false)}}>Cancel</button>
                       </div> 
                     : 
-                      <button className="mt-2 block py-2 px-3 rounded-md font-semibold bg-red-400 text-white hover:bg-red-600" onClick={() => setOpenSettings(true)}>Change Settings</button>
+                      <button className="mt-2 block py-2 px-3 rounded-md font-semibold bg-red-400 text-white hover:bg-red-600" onClick={() => {setOpenSettings(true); setEmailQuestion(true)}}>Change Settings</button>
                     }
                   </div>
-                  {emailQuestion && <ul className="text-sm rounded-md p-2 bg-white h-fit w-fit">
+                  <ul className={`text-sm rounded-md p-2 bg-white h-fit w-fit grid-col-start-2 grid-row-start-1 ${emailQuestion ? "opacity-100" : "opacity-0"}`}>
                     {emailFrequency.map((el) => {
                       return <li key={el.freqType}>
                         <span className="font-semibold">{el.freqType}</span>: {el.description}
                         </li>
                     })}
-                  </ul>}
-                  {openSettings && <div className="flex flex-col justify-start items-start">
+                  </ul>
+                  {openSettings && <div className="flex flex-col justify-start items-start grid-col-start-1 grid-row-start-1">
                     <label htmlFor="email" className="mb-1">Choose a frequency:</label>
                     <select
                       name="email"
                       id="email"
                       className="border rounded-md p-2 transition-all duration-300 hover:border-red-500"
+                      onChange={handleEmailSelection}
                     >
                       <option value="Default">Default</option>
                       <option value="Weekly">Weekly</option>
