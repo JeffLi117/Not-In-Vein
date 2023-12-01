@@ -18,6 +18,7 @@ export default function Profile() {
   const [loading, setLoading] = useState(true);
   const [openSettings, setOpenSettings] = useState(false);
   const [emailQuestion, setEmailQuestion] = useState(false);
+  const [emailSelection, setEmailSelection] = useState(null);
   // console.log(user);
   const upcomingDonation = new Date(dynamoDBInfo.upcomingDonation);
   const latestDonation = new Date(dynamoDBInfo.latestDonation);
@@ -34,6 +35,10 @@ export default function Profile() {
       }
       checkAuthentication();
   }, [user])
+
+  const handleEmailSelection = (str) => {
+    setEmailSelection(str)
+  }
     
     // console.log(user);
     return (
@@ -101,7 +106,7 @@ export default function Profile() {
                   </ul>}
                   {openSettings && <ul>
                     {emailFrequency.map((el) => {
-                      return <li key={el.freqType} className="p-1 hover:bg-white transition ease-in-out">
+                      return <li key={el.freqType} className="p-1 hover:bg-white transition ease-in-out" onClick={() => handleEmailSelection(el.freqType)}>
                         <span className="font-semibold">{el.freqType}</span>: {el.description}
                         </li>
                     })}
