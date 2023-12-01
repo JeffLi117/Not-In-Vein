@@ -16,7 +16,7 @@ export default function RootLayout({ children }) {
           href='https://api.tiles.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.css' rel='stylesheet' 
         />
       </head>
-      <body>
+      <body className='bg-red-200'>
         <AuthContextProvider>
           <Navbar />
           {children} 

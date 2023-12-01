@@ -52,7 +52,7 @@ export default function Navbar() {
     }, [user])
 
     return (
-        <nav className="md:flex items-center justify-between p-2 bg-red-500">
+        <nav className="md:flex h-[74px] items-center justify-between p-2 bg-red-500">
             <Link href="/" className={`text-4xl ${bebas_n.className} flex items-center justify-center gap-2`}>
                 <Image 
                     className="rounded-lg"
