@@ -115,7 +115,7 @@ export default function Donate() {
     
     
     return (
-        <div className="bg-red-200 h-screen p-4">
+        <div className="bg-red-200 h-[calc(100vh-74px)] p-4">
             {((user && upcomingDonation) && !stayOnScheduling)? 
             <div className="text-2xl font-medium flex flex-col justify-center items-center">You have an upcoming appointment scheduled on {`${cutDownDate(new Date(upcomingDonation))}`}.</div>
                 : ((user && (!upcomingDonation || stayOnScheduling)) && (user && latestDonation)) ?

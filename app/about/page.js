@@ -19,7 +19,7 @@ const alegreya = Alegreya({
 
 export default function page() {
   return (
-    <div className="bg-red-200 h-screen p-4 flex justify-center items-start">
+    <div className="bg-red-200 h-[calc(100vh-74px)] p-4 flex justify-center items-start">
         <div className="flex flex-col justify-center items-center gap-4 w-1/2 text-center text-xl">
             <h1 className={`text-4xl ${alegreya.className} font-bold`}>About Us</h1>
             <p className="text-2xl font-medium">Not In Vein (NIV) was built to make it easier for people to schedule blood donations.</p>

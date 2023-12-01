@@ -4,13 +4,14 @@ import { UserAuth } from "../context/AuthContext";
 import cutDownDate from "../components/helpers";
 import { formatDistanceToNowStrict, isToday, isFuture } from 'date-fns';
 import Link from 'next/link';
-import { FaQuestionCircle } from "react-icons/fa";
+import { FaQuestionCircle, FaCircle, FaCheckCircle } from "react-icons/fa";
 
 const emailFrequency = [
   {freqType: "Default", description: "Receive a reminder 1 week before, 1 day before, and the morning of your upcoming donation!"},
   {freqType: "Weekly", description: "On top of the default frequency, receive an additional reminder for your upcoming donation on Monday of every week!"},
   {freqType: "Monthly", description: "On top of the default frequency, receive an additional for your upcoming donation on the first day of every month!"},
   {freqType: "WeekOf", description: "Receive a reminder every day for the week leading up to your upcoming donation!"},
+  {freqType: "None", description: "Don't receive any reminders for your upcoming donations."},
 ]
  
 export default function Profile() {
@@ -18,13 +19,19 @@ export default function Profile() {
   const [loading, setLoading] = useState(true);
   const [openSettings, setOpenSettings] = useState(false);
   const [emailQuestion, setEmailQuestion] = useState(false);
+  const [emailSelection, setEmailSelection] = useState(null);
+  const [savedSetting, setSavedSetting] = useState(null);
   // console.log(user);
   const upcomingDonation = new Date(dynamoDBInfo.upcomingDonation);
   const latestDonation = new Date(dynamoDBInfo.latestDonation);
   // console.log("🚀 ~ file: page.js:14 ~ Profile ~ upcomingDonation:", upcomingDonation)
   const handleSaveSettings = async () => {
     // logic to save settings
-    setOpenSettings(false);
+    setOpenSettings(false); 
+    setEmailQuestion(false);
+
+    // Log the selected email frequency
+    setSavedSetting(emailSelection);
   }
 
   useEffect(() => {
@@ -34,10 +41,15 @@ export default function Profile() {
       }
       checkAuthentication();
   }, [user])
+
+  const handleEmailSelection = (event) => {
+    const selectedValue = event.target.value;
+    setEmailSelection(selectedValue);
+  }
     
     // console.log(user);
     return (
-        <div className="bg-red-200 h-screen justify-center items-center p-4">
+        <div className="bg-red-200 h-[calc(100vh-74px)] justify-center items-center p-4">
           {loading ? 
             <p>Loading...</p>
           : !user ? (
@@ -46,22 +58,24 @@ export default function Profile() {
             </div>
           ): 
           (
-          <div className="max-w-screen-md mx-auto mt-5">
-            <header className="flex flex-col sm:flex-row items-center text-center sm:text-left">
-              <div className="pb-5 sm:pr-10">
-                <img 
-                  src={user.photoURL? user.photoURL : "default.jpg"} 
-                  alt="user's photo image." 
-                  referrerPolicy="no-referrer" 
-                  className="rounded-full h-40 w-40 object-cover"
-                />
-              </div>       
-              <h1 className="text-2xl font-bold">{user.displayName}</h1>
-            </header>
-            <main className="mt-10 text-center flex flex-col justify-start items-start gap-4 sm:text-left">
+          <div className="w-full px-32 mt-5">
+            <header className="flex flex-row items-center justify-between text-center sm:text-left">
               <section>
                 <ShowDonationCountDown date={upcomingDonation} />
               </section>
+              <div className="flex flex-col items-center justify-center text-center pb-5 sm:pr-20">
+                <div>
+                  <img 
+                    src={user.photoURL? user.photoURL : "default.jpg"} 
+                    alt="user's photo image." 
+                    referrerPolicy="no-referrer" 
+                    className="rounded-full h-48 w-48 object-cover"
+                  />
+                </div>       
+              <h1 className="text-2xl font-bold pt-4">{user.displayName}</h1>
+              </div>
+            </header>
+            <main className="mt-4 text-center flex flex-col justify-start items-start gap-4 sm:text-left">
               <section>
                 <h2 className="text-xl font-bold">Badges</h2>
                 <ul className="flex justify-center items-center sm:justify-start">
@@ -70,42 +84,50 @@ export default function Profile() {
                 </ul>
               </section>
               <section className="flex w-full flex-col justify-start items-start">
-                <div className="grid w-full grid-cols-[40%,60%]">
-                  <div className="flex flex-col justify-start items-start gap-1">
+                <div className="grid w-full grid-cols-[30%,70%] grid-rows-2">
+                  <div className="flex flex-col justify-start items-start gap-2">
                     <div className="flex justify-start items-center gap-1">
                       <h2 className="text-xl font-bold">Email Notification Settings</h2>
-                      <div className={`${(emailQuestion && !openSettings) ? "bg-white" : ""} transition ease-in-out p-1 rounded-full`}>
+                      <div className={`${(emailQuestion) ? "bg-white" : ""} transition ease-in-out p-1 rounded-full`}>
                         <FaQuestionCircle 
                           className="text-sm z-20 rounded-full" 
                           onClick={() => setEmailQuestion(!emailQuestion)}
                         /> 
                       </div>
                     </div>
+                    {savedSetting ? <div>Your setting has been updated to: {savedSetting}</div> : <div>Current setting: {user.emailSettings ? user.emailSettings : "Default"}</div>}
                     
-                    <div>Current setting: {user.emailSettings ? user.emailSettings : "Default"}</div>
                     {openSettings ? 
                       <div className="flex justify-start items-center gap-2">
                         <button className="mt-2 block py-2 px-3 rounded-md font-semibold bg-red-400 text-white hover:bg-red-600" onClick={handleSaveSettings}>Save Changes</button>
-                        <button className="mt-2 block py-2 px-3 rounded-md font-semibold bg-red-400 text-white hover:bg-red-600" onClick={() => setOpenSettings(false)}>Cancel</button>
+                        <button className="mt-2 block py-2 px-3 rounded-md font-semibold bg-red-400 text-white hover:bg-red-600" onClick={() => {setOpenSettings(false); setEmailQuestion(false)}}>Cancel</button>
                       </div> 
                     : 
-                      <button className="mt-2 block py-2 px-3 rounded-md font-semibold bg-red-400 text-white hover:bg-red-600" onClick={() => setOpenSettings(true)}>Change Settings</button>
+                      <button className="mt-2 block py-2 px-3 rounded-md font-semibold bg-red-400 text-white hover:bg-red-600" onClick={() => {setOpenSettings(true); setEmailQuestion(true)}}>Change Settings</button>
                     }
                   </div>
-                  {(emailQuestion && !openSettings) && <ul className="text-xs rounded-md p-2 bg-white">
+                  <ul className={`text-sm rounded-md p-2 bg-white h-fit w-fit grid-col-start-2 grid-row-start-1 ${emailQuestion ? "opacity-100" : "opacity-0"}`}>
                     {emailFrequency.map((el) => {
                       return <li key={el.freqType}>
                         <span className="font-semibold">{el.freqType}</span>: {el.description}
                         </li>
                     })}
-                  </ul>}
-                  {openSettings && <ul>
-                    {emailFrequency.map((el) => {
-                      return <li key={el.freqType} className="p-1 hover:bg-white transition ease-in-out">
-                        <span className="font-semibold">{el.freqType}</span>: {el.description}
-                        </li>
-                    })}
-                  </ul>}
+                  </ul>
+                  {openSettings && <div className="flex flex-col justify-start items-start grid-col-start-1 grid-row-start-1">
+                    <label htmlFor="email" className="mb-1">Choose a frequency:</label>
+                    <select
+                      name="email"
+                      id="email"
+                      className="border rounded-md p-2 transition-all duration-300 hover:border-red-500"
+                      onChange={handleEmailSelection}
+                    >
+                      <option value="Default">Default</option>
+                      <option value="Weekly">Weekly</option>
+                      <option value="Monthly">Monthly</option>
+                      <option value="WeekOf">WeekOf</option>
+                      <option value="None">None</option>
+                    </select>
+                  </div>}
                 </div>
               </section>
             </main>

@@ -23,7 +23,7 @@ const alegreya = Alegreya({
 
 export default function Home() {
   return (
-    <div className={`h-screen relative bg-red-bg p-20 ${alegreya.className}`}>
+    <div className={`h-[calc(100vh-74px)] relative bg-red-bg p-20 ${alegreya.className}`}>
       <div className="h-full w-1/2 bg-transparent rounded-lg p-8">
         <div className="flex flex-col justify-center items-start gap-4">
           <div className="text-2xl font-bold">{landingPageSentences[0]}</div>

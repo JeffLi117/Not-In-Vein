@@ -124,7 +124,7 @@ const handleSearchBloodCenters = async (e) => {
   }
 
   return isLoaded ? (
-    <form onSubmit={handleSearchBloodCenters} className="bg-red-200 h-screen flex flex-col justify-start items-center gap-2 p-2">
+    <form onSubmit={handleSearchBloodCenters} className="bg-red-200 h-[calc(100vh-74px)] flex flex-col justify-start items-center gap-2 p-2">
         <div className="flex justify-center items-center gap-2">
             <input
                 type="text"
