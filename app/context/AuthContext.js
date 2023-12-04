@@ -16,6 +16,7 @@ export const AuthContextProvider = ({children}) => {
         latestDonation: null,
         upcomingDonation: null,
         email: null,
+        emailSettings: null,
         allDonations: [],
     })
 

@@ -4,7 +4,10 @@ import { UserAuth } from "../context/AuthContext";
 import cutDownDate from "../components/helpers";
 import { formatDistanceToNowStrict, isToday, isFuture } from 'date-fns';
 import Link from 'next/link';
-import { FaQuestionCircle, FaCircle, FaCheckCircle } from "react-icons/fa";
+import { FaQuestionCircle } from "react-icons/fa";
+import TokenApi from "../api/TokenApi";
+import { DynamoDB } from "@aws-sdk/client-dynamodb";
+import { DynamoDBDocumentClientCommand } from "@aws-sdk/lib-dynamodb";
 
 const emailFrequency = [
   {freqType: "Default", description: "Receive a reminder 1 week before, 1 day before, and the morning of your upcoming donation!"},
@@ -15,7 +18,7 @@ const emailFrequency = [
 ]
  
 export default function Profile() {
-  const {user, dynamoDBInfo} = UserAuth();
+  const {user, dynamoDBInfo, setDynamoDBInfo} = UserAuth();
   const [loading, setLoading] = useState(true);
   const [openSettings, setOpenSettings] = useState(false);
   const [emailQuestion, setEmailQuestion] = useState(false);
@@ -30,8 +33,38 @@ export default function Profile() {
     setOpenSettings(false); 
     setEmailQuestion(false);
 
-    // Log the selected email frequency
-    setSavedSetting(emailSelection);
+    try {
+      await setDynamoDBInfo(prevState => {
+        const newState = { ...prevState, emailSettings: emailSelection };
+        console.log(`new emailSettings is ${newState.emailSettings}`);
+        return newState;
+      });
+
+      //  if Context state is properly updated, call TokenApi to backend to update user's setting in DB
+      try {
+        const params = {...dynamoDBInfo, emailSettings: emailSelection};
+        const data = await TokenApi.updateEmailSettings(params);
+        console.log("Success - email setting added", data);
+        setSavedSetting(emailSelection);
+      } catch (err) {
+        console.log("Error", err);
+      }
+    } catch (err) {
+      console.log("Some error occurred :(", err.message)
+    }
+
+    // Promise.all(setDynamoDBInfo(prevState => {
+    //     const newState = { ...prevState, emailSettings: emailSelection };
+    //     console.log(`new emailSettings is ${newState.emailSettings}`);
+    //     return newState;
+    //   }))
+    //   .then(console.log(`new emailSettings is ${dynamoDBInfo.emailSettings}`))
+    //   .then(await TokenApi.updateEmailSettings(dynamoDBInfo))
+    //   // Log the selected email frequency
+    //   .then(setSavedSetting(emailSelection))
+    //   .catch(function(err) {
+    //       console.log("Some error occurred :(", err.message)
+    //   })
   }
 
   useEffect(() => {
@@ -84,16 +117,15 @@ export default function Profile() {
                 </ul>
               </section>
               <section className="flex w-full flex-col justify-start items-start">
-                <div className="grid w-full grid-cols-[30%,70%] grid-rows-2">
-                  <div className="flex flex-col justify-start items-start gap-2">
-                    <div className="flex justify-start items-center gap-1">
-                      <h2 className="text-xl font-bold">Email Notification Settings</h2>
-                      <div className={`${(emailQuestion) ? "bg-white" : ""} transition ease-in-out p-1 rounded-full`}>
+                <div className="grid w-full grid-cols-[35%,63%] gap-1 grid-rows-2">
+                  <div className="flex flex-col justify-start items-start gap-2 overflow-auto">
+                    <div className="">
+                      <h2 className="text-xl font-bold flex justify-start items-start">Email Notification Settings
                         <FaQuestionCircle 
-                          className="text-sm z-20 rounded-full" 
+                          className={`${(emailQuestion) ? "bg-white" : ""} transition ease-in-out p-1 text-sm z-20 rounded-full h-fit w-fit`}
                           onClick={() => setEmailQuestion(!emailQuestion)}
                         /> 
-                      </div>
+                      </h2>
                     </div>
                     {savedSetting ? <div>Your setting has been updated to: {savedSetting}</div> : <div>Current setting: {user.emailSettings ? user.emailSettings : "Default"}</div>}
                     
