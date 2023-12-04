@@ -41,14 +41,21 @@ export default class TokenApi {
     //  == add upcoming donation == //
     static async addUpcomingDonation(userData) {
         let res = await this.request(`adddonation/${userData.uid}`, userData, "post");
-        console.log("🚀🚀 ~ file: TokenApi.js:46 ~ TokenApi ~ addUserData ~ res:", res)
+        console.log("🚀🚀 ~ file: TokenApi.js:46 ~ TokenApi ~ addUpcomingDonation ~ res:", res)
         return res;
     }
 
     // == update upcoming donation ==//
     static async updateUpcomingDonation(userData, userid) {
         let res = await this.request(`updatedonation/${userid}`, userData, "patch");
-        console.log("🚀🚀 ~ file: TokenApi.js:46 ~ TokenApi ~ addUserData ~ res:", res)
+        console.log("🚀🚀 ~ file: TokenApi.js:46 ~ TokenApi ~ updateUpcomingDonation ~ res:", res)
+        return res;
+    }
+
+    // == update email frequency setting ==//
+    static async updateEmailSettings(userData) {
+        let res = await this.request(`updateemailsettings/${userid}`, userData, "patch");
+        console.log("🚀🚀 ~ file: TokenApi.js:58 ~ TokenApi ~ updateEmailSettings ~ res:", res)
         return res;
     }
 }
