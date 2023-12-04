@@ -54,7 +54,7 @@ export default class TokenApi {
 
     // == update email frequency setting ==//
     static async updateEmailSettings(userData) {
-        let res = await this.request(`updateemailsettings/${userid}`, userData, "patch");
+        let res = await this.request(`updateemailsettings/${userData.id}`, userData, "patch");
         console.log("🚀🚀 ~ file: TokenApi.js:58 ~ TokenApi ~ updateEmailSettings ~ res:", res)
         return res;
     }

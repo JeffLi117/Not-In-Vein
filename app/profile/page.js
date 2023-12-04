@@ -7,6 +7,7 @@ import Link from 'next/link';
 import { FaQuestionCircle } from "react-icons/fa";
 import TokenApi from "../api/TokenApi";
 import { DynamoDB } from "@aws-sdk/client-dynamodb";
+import { DynamoDBDocumentClientCommand } from "@aws-sdk/lib-dynamodb";
 
 const emailFrequency = [
   {freqType: "Default", description: "Receive a reminder 1 week before, 1 day before, and the morning of your upcoming donation!"},
@@ -36,15 +37,29 @@ export default function Profile() {
       await setDynamoDBInfo(prevState => {
         const newState = { ...prevState, emailSettings: emailSelection };
         console.log(`new emailSettings is ${newState.emailSettings}`);
-        setSavedSetting(emailSelection);
         return newState;
       });
+
+      //  if Context state is properly updated, call TokenApi to backend to update user's setting in DB
+      try {
+        const params = {...dynamoDBInfo, emailSettings: emailSelection};
+        const data = await TokenApi.updateEmailSettings(params);
+        console.log("Success - email setting added", data);
+        setSavedSetting(emailSelection);
+      } catch (err) {
+        console.log("Error", err);
+      }
     } catch (err) {
       console.log("Some error occurred :(", err.message)
     }
 
-    // Promise.all()
+    // Promise.all(setDynamoDBInfo(prevState => {
+    //     const newState = { ...prevState, emailSettings: emailSelection };
+    //     console.log(`new emailSettings is ${newState.emailSettings}`);
+    //     return newState;
+    //   }))
     //   .then(console.log(`new emailSettings is ${dynamoDBInfo.emailSettings}`))
+    //   .then(await TokenApi.updateEmailSettings(dynamoDBInfo))
     //   // Log the selected email frequency
     //   .then(setSavedSetting(emailSelection))
     //   .catch(function(err) {
