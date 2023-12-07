@@ -52,28 +52,24 @@ export default function Profile() {
     } catch (err) {
       console.log("Some error occurred :(", err.message)
     }
-
-    // Promise.all(setDynamoDBInfo(prevState => {
-    //     const newState = { ...prevState, emailSettings: emailSelection };
-    //     console.log(`new emailSettings is ${newState.emailSettings}`);
-    //     return newState;
-    //   }))
-    //   .then(console.log(`new emailSettings is ${dynamoDBInfo.emailSettings}`))
-    //   .then(await TokenApi.updateEmailSettings(dynamoDBInfo))
-    //   // Log the selected email frequency
-    //   .then(setSavedSetting(emailSelection))
-    //   .catch(function(err) {
-    //       console.log("Some error occurred :(", err.message)
-    //   })
   }
 
   useEffect(() => {
       const checkAuthentication = async () => {
-          await new Promise((resolve) => setTimeout(resolve, 100));
-          setLoading(false);
+        await new Promise((resolve) => setTimeout(resolve, 100));
+        setLoading(false);
       }
       checkAuthentication();
   }, [user])
+
+  useEffect(() => {
+    if (savedSetting !== null) { 
+      setDynamoDBInfo((prevState) => ({
+        ...prevState,
+        emailSettings: savedSetting,
+      }))
+    }
+  }, [savedSetting])
 
   const handleEmailSelection = (event) => {
     const selectedValue = event.target.value;
@@ -131,7 +127,7 @@ export default function Profile() {
                     
                     {openSettings ? 
                       <div className="flex justify-start items-center gap-2">
-                        <button className="mt-2 block py-2 px-3 rounded-md font-semibold bg-red-400 text-white hover:bg-red-600" onClick={handleSaveSettings}>Save Changes</button>
+                        <button className={`mt-2 block py-2 px-3 rounded-md font-semibold bg-red-400 text-white hover:bg-red-600 ${dynamoDBInfo.emailSettings === emailSelection ? "pointer-events-none bg-gray-400 opacity-70" : ""}`} onClick={handleSaveSettings}>Save Changes</button>
                         <button className="mt-2 block py-2 px-3 rounded-md font-semibold bg-red-400 text-white hover:bg-red-600" onClick={() => {setOpenSettings(false); setEmailQuestion(false)}}>Cancel</button>
                       </div> 
                     : 
@@ -152,6 +148,7 @@ export default function Profile() {
                       id="email"
                       className="border rounded-md p-2 transition-all duration-300 hover:border-red-500"
                       onChange={handleEmailSelection}
+                      defaultValue={`${emailSelection ? emailSelection : "Default"}`}
                     >
                       <option value="Default">Default</option>
                       <option value="Weekly">Weekly</option>
