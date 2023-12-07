@@ -122,12 +122,12 @@ export default function Profile() {
                     <div className="">
                       <h2 className="text-xl font-bold flex justify-start items-start">Email Notification Settings
                         <FaQuestionCircle 
-                          className={`${(emailQuestion) ? "bg-white" : ""} transition ease-in-out p-1 text-sm z-20 rounded-full h-fit w-fit`}
+                          className={`${(emailQuestion) ? "bg-white" : ""} transition ease-in-out p-1 text-sm z-20 rounded-full h-fit w-fit hover:opacity-50`}
                           onClick={() => setEmailQuestion(!emailQuestion)}
                         /> 
                       </h2>
                     </div>
-                    {savedSetting ? <div>Your setting has been updated to: {savedSetting}</div> : <div>Current setting: {user.emailSettings ? user.emailSettings : "Default"}</div>}
+                    {savedSetting ? <div>Your setting has been updated to: {savedSetting}</div> : <div>Current setting: {dynamoDBInfo.emailSettings ? dynamoDBInfo.emailSettings : "Default"}</div>}
                     
                     {openSettings ? 
                       <div className="flex justify-start items-center gap-2">
