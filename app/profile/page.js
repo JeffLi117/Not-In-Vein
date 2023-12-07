@@ -29,6 +29,9 @@ export default function Profile() {
   const latestDonation = new Date(dynamoDBInfo.latestDonation);
   // console.log("🚀 ~ file: page.js:14 ~ Profile ~ upcomingDonation:", upcomingDonation)
   const handleSaveSettings = async () => {
+    // if user is able to focus on "Save Changes" (i.e. bypass pointer events none)
+    if (dynamoDBInfo.emailSettings === emailSelection) return
+
     // logic to save settings
     setOpenSettings(false); 
     setEmailQuestion(false);
@@ -52,28 +55,24 @@ export default function Profile() {
     } catch (err) {
       console.log("Some error occurred :(", err.message)
     }
-
-    // Promise.all(setDynamoDBInfo(prevState => {
-    //     const newState = { ...prevState, emailSettings: emailSelection };
-    //     console.log(`new emailSettings is ${newState.emailSettings}`);
-    //     return newState;
-    //   }))
-    //   .then(console.log(`new emailSettings is ${dynamoDBInfo.emailSettings}`))
-    //   .then(await TokenApi.updateEmailSettings(dynamoDBInfo))
-    //   // Log the selected email frequency
-    //   .then(setSavedSetting(emailSelection))
-    //   .catch(function(err) {
-    //       console.log("Some error occurred :(", err.message)
-    //   })
   }
 
   useEffect(() => {
       const checkAuthentication = async () => {
-          await new Promise((resolve) => setTimeout(resolve, 100));
-          setLoading(false);
+        await new Promise((resolve) => setTimeout(resolve, 500));
+        setLoading(false);
       }
       checkAuthentication();
   }, [user])
+
+  useEffect(() => {
+    if (savedSetting !== null) { 
+      setDynamoDBInfo((prevState) => ({
+        ...prevState,
+        emailSettings: savedSetting,
+      }))
+    }
+  }, [savedSetting])
 
   const handleEmailSelection = (event) => {
     const selectedValue = event.target.value;
@@ -122,16 +121,16 @@ export default function Profile() {
                     <div className="">
                       <h2 className="text-xl font-bold flex justify-start items-start">Email Notification Settings
                         <FaQuestionCircle 
-                          className={`${(emailQuestion) ? "bg-white" : ""} transition ease-in-out p-1 text-sm z-20 rounded-full h-fit w-fit`}
+                          className={`${(emailQuestion) ? "bg-white" : ""} transition ease-in-out p-1 text-sm z-20 rounded-full h-fit w-fit hover:opacity-50`}
                           onClick={() => setEmailQuestion(!emailQuestion)}
                         /> 
                       </h2>
                     </div>
-                    {savedSetting ? <div>Your setting has been updated to: {savedSetting}</div> : <div>Current setting: {user.emailSettings ? user.emailSettings : "Default"}</div>}
+                    {savedSetting ? <div>Your setting has been updated to: {savedSetting}</div> : <div>Current setting: {dynamoDBInfo.emailSettings ? dynamoDBInfo.emailSettings : "Default"}</div>}
                     
                     {openSettings ? 
                       <div className="flex justify-start items-center gap-2">
-                        <button className="mt-2 block py-2 px-3 rounded-md font-semibold bg-red-400 text-white hover:bg-red-600" onClick={handleSaveSettings}>Save Changes</button>
+                        <button className={`mt-2 block py-2 px-3 rounded-md font-semibold bg-red-400 text-white hover:bg-red-600 ${dynamoDBInfo.emailSettings === emailSelection ? "pointer-events-none bg-gray-400 opacity-70" : ""}`} onClick={handleSaveSettings}>Save Changes</button>
                         <button className="mt-2 block py-2 px-3 rounded-md font-semibold bg-red-400 text-white hover:bg-red-600" onClick={() => {setOpenSettings(false); setEmailQuestion(false)}}>Cancel</button>
                       </div> 
                     : 
@@ -152,6 +151,7 @@ export default function Profile() {
                       id="email"
                       className="border rounded-md p-2 transition-all duration-300 hover:border-red-500"
                       onChange={handleEmailSelection}
+                      defaultValue={`${emailSelection ? emailSelection : "Default"}`}
                     >
                       <option value="Default">Default</option>
                       <option value="Weekly">Weekly</option>
