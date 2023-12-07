@@ -29,6 +29,9 @@ export default function Profile() {
   const latestDonation = new Date(dynamoDBInfo.latestDonation);
   // console.log("🚀 ~ file: page.js:14 ~ Profile ~ upcomingDonation:", upcomingDonation)
   const handleSaveSettings = async () => {
+    // if user is able to focus on "Save Changes" (i.e. bypass pointer events none)
+    if (dynamoDBInfo.emailSettings === emailSelection) return
+
     // logic to save settings
     setOpenSettings(false); 
     setEmailQuestion(false);
@@ -56,7 +59,7 @@ export default function Profile() {
 
   useEffect(() => {
       const checkAuthentication = async () => {
-        await new Promise((resolve) => setTimeout(resolve, 100));
+        await new Promise((resolve) => setTimeout(resolve, 500));
         setLoading(false);
       }
       checkAuthentication();
