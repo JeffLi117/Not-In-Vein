@@ -8,6 +8,7 @@ import Link from 'next/link';
 import Not_In_Vein_logo from "../../public/Not_In_Vein_logo.png";
 import Image from "next/image";
 import HamburgerIcon from "./HamburgerIcon";
+import { Button, Dropdown, DropdownItem, ToolbarButton, DropdownDivider } from "flowbite-react";
  
 const nunito = Nunito({
   subsets: ['latin'],
@@ -69,15 +70,15 @@ export default function Navbar() {
                     Not In Vein
                 </div>
             </Link>
-            {/* menu icon */}
-            <HamburgerIcon />
-            {/* <div onClick={() => setOpen(!open)} className="absolute top-4 right-6 cursor-pointer md:hidden">
-                {open? 
-                <AiOutlineClose className="text-3xl text-gray-800" />
-                :
-                <FiMenu className=" text-3xl text-gray-800" />
-                }
-            </div> */}
+
+            <Dropdown label="" dismissOnClick={true} renderTrigger={() => <span><HamburgerIcon /></span>}>
+                {!user ? null : <Dropdown.Item>Hi, {user.displayName}</Dropdown.Item>}
+                <Dropdown.Item><Link href="/about">About</Link></Dropdown.Item>
+                {!user ? <Dropdown.Item onClick={handleSignIn}>Login</Dropdown.Item> : <Dropdown.Item><Link href="/donate">Donate</Link></Dropdown.Item>}
+                {!user ? <Dropdown.Item onClick={handleSignIn}>Sign Up</Dropdown.Item> : <Dropdown.Item><Link href="/profile">Profile</Link></Dropdown.Item>}
+                {!user ? null : <Dropdown.Item onClick={handleSignOut}>Sign Out</Dropdown.Item>}
+            </Dropdown>
+
             {loading ? null : !user ? 
                 (<div className={`md:flex items-center justify-end gap-4 hidden`}>
                     <Link href="/about" className="block md:inline- w-full md:w-fit text-left font-semibold md:text-center py-1 px-2 rounded-md hover:text-white hover:bg-red-400 hover:text-white border border-transparent">About</Link>
