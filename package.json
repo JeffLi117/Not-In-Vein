@@ -15,6 +15,7 @@
     "@aws-sdk/util-dynamodb": "^3.433.0",
     "@googlemaps/js-api-loader": "^1.16.2",
     "@mapbox/tiny-sdf": "^2.0.6",
+    "@material-tailwind/react": "^2.1.6",
     "@react-google-maps/api": "^2.19.2",
     "autoprefixer": "10.4.15",
     "aws-crt": "^1.18.3",

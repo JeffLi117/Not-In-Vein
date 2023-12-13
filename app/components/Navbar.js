@@ -7,6 +7,7 @@ import { AiOutlineClose } from 'react-icons/ai';
 import Link from 'next/link';
 import Not_In_Vein_logo from "../../public/Not_In_Vein_logo.png";
 import Image from "next/image";
+import HamburgerIcon from "./HamburgerIcon";
  
 const nunito = Nunito({
   subsets: ['latin'],
@@ -26,6 +27,9 @@ export default function Navbar() {
     const { user, googleSignIn, userSignOut } = UserAuth();
     const [loading, setLoading] = useState(true);
     const [open, setOpen] = useState(false);
+    
+    const openDrawer = () => setOpen(true);
+    const closeDrawer = () => setOpen(false);
 
     const handleSignIn = async () => {
         try {
@@ -52,10 +56,10 @@ export default function Navbar() {
     }, [user])
 
     return (
-        <nav className="md:flex h-[74px] items-center justify-between p-2 bg-red-500">
+        <nav className="flex h-[74px] items-center justify-between p-2 bg-red-500">
             <Link href="/" className={`text-4xl ${bebas_n.className} flex items-center justify-center gap-2`}>
                 <Image 
-                    className="rounded-lg"
+                    className="rounded-lg mb-[7px]"
                     src={Not_In_Vein_logo}
                     width={50}
                     height={50}
@@ -66,21 +70,22 @@ export default function Navbar() {
                 </div>
             </Link>
             {/* menu icon */}
-            <div onClick={() => setOpen(!open)} className="absolute top-4 right-6 cursor-pointer md:hidden">
+            <HamburgerIcon />
+            {/* <div onClick={() => setOpen(!open)} className="absolute top-4 right-6 cursor-pointer md:hidden">
                 {open? 
                 <AiOutlineClose className="text-3xl text-gray-800" />
                 :
                 <FiMenu className=" text-3xl text-gray-800" />
                 }
-            </div>
+            </div> */}
             {loading ? null : !user ? 
-                (<div className={`md:flex md:items-center md:justify-end md:gap-4  ${open? "block":"hidden"}`}>
+                (<div className={`md:flex items-center justify-end gap-4 hidden`}>
                     <Link href="/about" className="block md:inline- w-full md:w-fit text-left font-semibold md:text-center py-1 px-2 rounded-md hover:text-white hover:bg-red-400 hover:text-white border border-transparent">About</Link>
                     <button onClick={handleSignIn} className="block md:inline- w-full md:w-fit text-left font-semibold md:text-center py-1 px-2 rounded-md hover:text-white hover:border-white border border-transparent">Login</button>
                     <button onClick={handleSignIn} className="block md:inline-block w-full md:w-fit text-left font-semibold md:text-center py-1 px-2 rounded-md hover:text-white hover:border-white border border-transparent">Sign Up</button>
                 </div>)
             :
-                (<div className={`md:flex md:items-center md:justify-end md:gap-4 font-semibold ${open? "block":"hidden"}`}>
+                (<div className={`md:flex items-center justify-end gap-4 font-semibold hidden`}>
                     <div className="py-1 px-2">Hi, {user.displayName}</div>
                     <Link href="/about" className="block md:inline- w-full md:w-fit text-left font-semibold md:text-center py-1 px-2 rounded-md hover:text-white hover:border-white border border-transparent">About</Link>
                     <Link href="/donate" className="block py-1 px-2 rounded-md font-semibold hover:bg-red-400 hover:text-white">Donate</Link>
