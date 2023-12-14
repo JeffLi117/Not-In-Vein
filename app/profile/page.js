@@ -90,8 +90,8 @@ export default function Profile() {
             </div>
           ): 
           (
-          <div className="w-full grid grid-cols-3 md:px-32 lg:px-40 mt-5">
-            <header className="row-start-1 col-start-3 col-end-4 flex flex-col items-center justify-start text-center h-fit sm:text-left">
+          <div className="w-full flex flex-col justify-start items-center md:grid md:grid-cols-3 md:px-32 lg:px-40 mt-5">
+            <header className="col-start-3 col-end-4 h-full flex flex-col items-center justify-start text-center">
               <img 
                 src={user.photoURL? user.photoURL : "default.jpg"} 
                 alt="user's photo image." 
@@ -150,7 +150,7 @@ export default function Profile() {
                   </div>
                   <ul className={`text-sm rounded-md p-2 bg-white h-fit w-fit mt-2 ${emailQuestion ? "opacity-100" : "opacity-0"}`}>
                     {emailFrequency.map((el) => {
-                      return <li key={el.freqType}>
+                      return <li key={el.freqType} className="text-left md:text-center mb-2 md:mb-0">
                         <span className="font-semibold">{el.freqType}</span>: {el.description}
                         </li>
                     })}
@@ -170,14 +170,14 @@ function ShowDonationCountDown({date}){
   if(date && isFuture(date)){
     return(  
         <div>
-          <h2 className="text-xl font-bold">
-            <span className="block text-3xl pb-5">{formatDistanceToNowStrict(date)}</span>
-            until upcoming donation date: {cutDownDate(date)}
+          <h2 className="text-xl font-bold flex flex-col justify-start items-start md:block text-left">
+            <span className="text-3xl pb-5">{formatDistanceToNowStrict(date)}</span>
+            <span className="flex justify-start">until upcoming donation date: {cutDownDate(date)}</span>
           </h2>
-          <Link href="/reschedule" className="flex justify-center sm:block">
-          <button className="mt-5 block py-2 px-3 rounded-md font-semibold bg-red-400 text-white hover:bg-red-600">
-            Reschedule
-          </button>
+          <Link href="/reschedule" className="flex justify-start md:justify-center sm:block">
+            <button className="mt-5 block py-2 px-3 rounded-md font-semibold bg-red-400 text-white hover:bg-red-600">
+              Reschedule
+            </button>
           </Link>
         </div>
         )
@@ -187,7 +187,7 @@ function ShowDonationCountDown({date}){
       <h2 className="text-xl font-bold">
         Today is your donation day!
       </h2>
-      <Link href="/reschedule" className="flex justify-center sm:justify-start">
+      <Link href="/reschedule" className="flex justify-start md:justify-center">
         <button className="mt-5 block py-2 px-3 rounded-md font-semibold bg-red-400 text-white hover:bg-red-600">
           Reschedule
         </button>
@@ -199,7 +199,7 @@ function ShowDonationCountDown({date}){
       <div>
         <h2 className="text-xl font-bold pb-2">You don&apos;t have upcoming donation date scheduled.</h2>
         <Link href='/donate'>
-          <button  className="mt-5 block py-2 px-3 rounded-md font-semibold bg-red-400 text-white hover:bg-red-600">
+          <button className="mt-5 block py-2 px-3 rounded-md font-semibold bg-red-400 text-white hover:bg-red-600">
             Schedule Donation
           </button>
         </Link>
