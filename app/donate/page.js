@@ -3,11 +3,9 @@ import { useState, useEffect } from "react";
 import Past56SelectDate from "../components/Past56SelectDate";
 import RecentlyDonatedSelectDate from "../components/RecentDonatedSelectDate";
 import SelectDate from "../components/SelectDate";
-import { add, setMilliseconds, setSeconds, setMinutes, setHours } from "date-fns";
+import { add, parseISO, setMilliseconds, setSeconds, setMinutes, setHours } from "date-fns";
 import { UserAuth } from "../context/AuthContext";
-import { addRecentDonation, addUpcomingForRecent } from "../firebase/functions";
 import AddData from "../pages/adddata";
-import { DynamoDB } from "@aws-sdk/client-dynamodb";
 
 export default function Donate() {
     const { user, dynamoDBInfo } = UserAuth();
@@ -39,7 +37,7 @@ export default function Donate() {
     //for those who donated recently, when they can donate again
     const earliestToDonate = (aDate) => {
         // console.log(setHours(setMinutes(setSeconds(setMilliseconds(add(aDate, {days: 57}), 0), 0), 0), 0));
-        return setHours(setMinutes(setSeconds(setMilliseconds(add(aDate, {days: 57}), 0), 0), 0), 0);
+        return setHours(setMinutes(setSeconds(setMilliseconds(add(parseISO(aDate), {days: 57}), 0), 0), 0), 0);
     }
 
     const toggleOpenSchedDonatedRecently = () => {
