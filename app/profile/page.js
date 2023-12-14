@@ -90,24 +90,15 @@ export default function Profile() {
             </div>
           ): 
           (
-          <div className="w-full px-32 mt-5">
-            <header className="flex flex-row items-center justify-between text-center sm:text-left">
-              <section>
-                <ShowDonationCountDown date={upcomingDonation} />
-              </section>
-              <div className="flex flex-col items-center justify-center text-center pb-5 sm:pr-20">
-                <div>
-                  <img 
-                    src={user.photoURL? user.photoURL : "default.jpg"} 
-                    alt="user's photo image." 
-                    referrerPolicy="no-referrer" 
-                    className="rounded-full h-48 w-48 object-cover"
-                  />
-                </div>       
-              <h1 className="text-2xl font-bold pt-4">{user.displayName}</h1>
-              </div>
-            </header>
-            <main className="mt-4 text-center flex flex-col justify-start items-start gap-4 sm:text-left">
+          <div className="w-full grid grid-cols-3 md:px-32 lg:px-40 mt-5">
+            <header className="row-start-1 col-start-3 col-end-4 flex flex-col items-center justify-start text-center h-fit sm:text-left">
+              <img 
+                src={user.photoURL? user.photoURL : "default.jpg"} 
+                alt="user's photo image." 
+                referrerPolicy="no-referrer" 
+                className="rounded-full h-48 w-48 object-cover"
+              /> 
+              <h1 className="text-2xl font-bold py-4">{user.displayName}</h1>
               <section>
                 <h2 className="text-xl font-bold">Badges</h2>
                 <ul className="flex justify-center items-center sm:justify-start">
@@ -115,8 +106,13 @@ export default function Profile() {
                   <li>💉</li>
                 </ul>
               </section>
+            </header>
+            <main className="row-start-1 col-start-1 col-end-3 mt-4 text-center flex flex-col justify-start items-start gap-8 sm:text-left">
+              <section>
+                <ShowDonationCountDown date={upcomingDonation} />
+              </section>
               <section className="flex w-full flex-col justify-start items-start">
-                <div className="grid w-full grid-cols-[35%,63%] gap-1 grid-rows-2">
+                <div className="w-full">
                   <div className="flex flex-col justify-start items-start gap-2 overflow-auto">
                     <div className="">
                       <h2 className="text-xl font-bold flex justify-start items-start">Email Notification Settings
@@ -130,36 +126,35 @@ export default function Profile() {
                     
                     {openSettings ? 
                       <div className="flex justify-start items-center gap-2">
-                        <button className={`mt-2 block py-2 px-3 rounded-md font-semibold bg-red-400 text-white hover:bg-red-600 ${dynamoDBInfo.emailSettings === emailSelection ? "pointer-events-none bg-gray-400 opacity-70" : ""}`} onClick={handleSaveSettings}>Save Changes</button>
-                        <button className="mt-2 block py-2 px-3 rounded-md font-semibold bg-red-400 text-white hover:bg-red-600" onClick={() => {setOpenSettings(false); setEmailQuestion(false)}}>Cancel</button>
+                        <button className={`block py-2 px-3 rounded-md font-semibold bg-red-400 text-white hover:bg-red-600 ${dynamoDBInfo.emailSettings === emailSelection ? "pointer-events-none bg-gray-400 opacity-70" : ""}`} onClick={handleSaveSettings}>Save Changes</button>
+                        <button className="block py-2 px-3 rounded-md font-semibold bg-red-400 text-white hover:bg-red-600" onClick={() => {setOpenSettings(false); setEmailQuestion(false)}}>Cancel</button>
+                        <div className="flex flex-col justify-start items-start">
+                          <select
+                            name="email"
+                            id="email"
+                            className="border rounded-md p-2 transition-all duration-300 hover:border-red-500"
+                            onChange={handleEmailSelection}
+                            defaultValue={`${emailSelection ? emailSelection : "Default"}`}
+                          >
+                            <option value="Default">Default</option>
+                            <option value="Weekly">Weekly</option>
+                            <option value="Monthly">Monthly</option>
+                            <option value="WeekOf">WeekOf</option>
+                            <option value="None">None</option>
+                          </select>
+                        </div>
                       </div> 
                     : 
-                      <button className="mt-2 block py-2 px-3 rounded-md font-semibold bg-red-400 text-white hover:bg-red-600" onClick={() => {setOpenSettings(true); setEmailQuestion(true)}}>Change Settings</button>
+                      <button className="block py-2 px-3 rounded-md font-semibold bg-red-400 text-white hover:bg-red-600" onClick={() => {setOpenSettings(true); setEmailQuestion(true)}}>Change Settings</button>
                     }
                   </div>
-                  <ul className={`text-sm rounded-md p-2 bg-white h-fit w-fit grid-col-start-2 grid-row-start-1 ${emailQuestion ? "opacity-100" : "opacity-0"}`}>
+                  <ul className={`text-sm rounded-md p-2 bg-white h-fit w-fit mt-2 ${emailQuestion ? "opacity-100" : "opacity-0"}`}>
                     {emailFrequency.map((el) => {
                       return <li key={el.freqType}>
                         <span className="font-semibold">{el.freqType}</span>: {el.description}
                         </li>
                     })}
                   </ul>
-                  {openSettings && <div className="flex flex-col justify-start items-start grid-col-start-1 grid-row-start-1">
-                    <label htmlFor="email" className="mb-1">Choose a frequency:</label>
-                    <select
-                      name="email"
-                      id="email"
-                      className="border rounded-md p-2 transition-all duration-300 hover:border-red-500"
-                      onChange={handleEmailSelection}
-                      defaultValue={`${emailSelection ? emailSelection : "Default"}`}
-                    >
-                      <option value="Default">Default</option>
-                      <option value="Weekly">Weekly</option>
-                      <option value="Monthly">Monthly</option>
-                      <option value="WeekOf">WeekOf</option>
-                      <option value="None">None</option>
-                    </select>
-                  </div>}
                 </div>
               </section>
             </main>
