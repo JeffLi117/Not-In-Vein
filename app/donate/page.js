@@ -172,8 +172,8 @@ export default function Donate() {
                         <div className={`${confirmedAptFadeOut ? "animate-fadeout" : null}`}>
                             <div className="text-xl flex justify-center items-center mb-4">Have you donated blood within the past 56 days?</div>
                             <div className="flex justify-center items-center gap-2 mb-4">
-                                <button onClick={() => setDonatedRecently(true)} className={`border p-2 min-w-[7%] border-red-600 border-2 rounded-full hover:border-black hover:bg-slate-200 hover:bg-red-600 transition ease-in-out ${donatedRecently === true ? "bg-red-600" : null}`}>Yes</button>
-                                <button onClick={() => setDonatedRecently(false)} className={`border p-2 min-w-[7%] border-red-600 border-2 rounded-full hover:border-black hover:bg-slate-200 hover:bg-red-600 transition ease-in-out ${donatedRecently === false ? "bg-red-600" : null}`}>No</button>
+                                <button onClick={() => setDonatedRecently(true)} className={`border p-2 min-w-[17%] md:min-w-[7%] border-red-600 border-2 rounded-full hover:border-black hover:bg-slate-200 hover:bg-red-600 transition ease-in-out ${donatedRecently === true ? "bg-red-600" : null}`}>Yes</button>
+                                <button onClick={() => setDonatedRecently(false)} className={`border p-2 min-w-[17%] md:min-w-[7%] border-red-600 border-2 rounded-full hover:border-black hover:bg-slate-200 hover:bg-red-600 transition ease-in-out ${donatedRecently === false ? "bg-red-600" : null}`}>No</button>
                             </div>
                             {donatedRecently === true && 
                                 <div className={`${donatedRecently === true ? "opacity-100" : "opacity-0"} transition ease-in-out duration-500 delay-500 flex flex-col justify-center items-center gap-4`}>
@@ -183,9 +183,16 @@ export default function Donate() {
                                         functionToPass={setDonatedRecentlyDate}
                                     />
                                     {(donatedRecently === true && donatedRecentlyDate !== null) &&
-                                        <div>Since your most recent donation was on {`${cutDownDate(donatedRecentlyDate)}`},
-                                        <br></br>
-                                        The earliest your next donation can be is {`${cutDownDate(earliestPossDonation)}`}.</div>
+                                        <div className="italic"> 
+                                            <span className="hidden md:block">
+                                                Since your most recent donation was on {`${cutDownDate(donatedRecentlyDate)}`},
+                                                <br />
+                                                the earliest your next donation can be is {`${cutDownDate(earliestPossDonation)}`}.
+                                            </span>
+                                            <span className="md:hidden">
+                                                Since your most recent donation was on {`${cutDownDate(donatedRecentlyDate)}`}, the earliest your next donation can be is {`${cutDownDate(earliestPossDonation)}`}.
+                                            </span>
+                                        </div>
                                     }
                                     <button onClick={() => toggleOpenSchedDonatedRecently()} className={`border p-2 min-w-[7%] border-red-600 border-2 rounded-full hover:border-black hover:bg-slate-200 hover:bg-red-600 transition ease-in-out ${remindSchedule ? "bg-white animate-pulse" : null}`}>
                                         {openScheduleDonatedRecently ? "Close calendar" : "Schedule your next appointment"

@@ -174,7 +174,7 @@ function ShowDonationCountDown({date}){
             <span className="text-3xl pb-5">{formatDistanceToNowStrict(date)}</span>
             <span className="flex justify-start">until upcoming donation date: {cutDownDate(date)}</span>
           </h2>
-          <Link href="/reschedule" className="flex justify-start md:justify-center sm:block">
+          <Link href="/reschedule" className="block">
             <button className="mt-5 block py-2 px-3 rounded-md font-semibold bg-red-400 text-white hover:bg-red-600">
               Reschedule
             </button>
@@ -184,21 +184,21 @@ function ShowDonationCountDown({date}){
   } else if( date && isToday(date)){
     return(
       <div>
-      <h2 className="text-xl font-bold">
-        Today is your donation day!
-      </h2>
-      <Link href="/reschedule" className="flex justify-start md:justify-center">
-        <button className="mt-5 block py-2 px-3 rounded-md font-semibold bg-red-400 text-white hover:bg-red-600">
-          Reschedule
-        </button>
-      </Link>
-    </div>
+        <h2 className="text-xl font-bold flex flex-col justify-start items-start md:block text-left">
+          Today is your donation day!
+        </h2>
+        <Link href="/reschedule" className="block">
+          <button className="mt-5 block py-2 px-3 rounded-md font-semibold bg-red-400 text-white hover:bg-red-600">
+            Reschedule
+          </button>
+        </Link>
+      </div>
     )
   } else{
     return (
       <div>
-        <h2 className="text-xl font-bold pb-2">You don&apos;t have upcoming donation date scheduled.</h2>
-        <Link href='/donate'>
+        <h2 className="text-xl font-bold flex flex-col justify-start items-start md:block text-left">You don&apos;t have an upcoming donation date scheduled.</h2>
+        <Link href='/donate' className="block">
           <button className="mt-5 block py-2 px-3 rounded-md font-semibold bg-red-400 text-white hover:bg-red-600">
             Schedule Donation
           </button>

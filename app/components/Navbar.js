@@ -27,10 +27,6 @@ const bebas_n = Bebas_Neue({
 export default function Navbar() {
     const { user, googleSignIn, userSignOut } = UserAuth();
     const [loading, setLoading] = useState(true);
-    const [open, setOpen] = useState(false);
-    
-    const openDrawer = () => setOpen(true);
-    const closeDrawer = () => setOpen(false);
 
     const handleSignIn = async () => {
         try {
@@ -74,8 +70,10 @@ export default function Navbar() {
             <Dropdown label="" dismissOnClick={true} renderTrigger={() => <span><HamburgerIcon /></span>}>
                 {!user ? null : <Dropdown.Item>Hi, {user.displayName}</Dropdown.Item>}
                 <Dropdown.Item><Link href="/about">About</Link></Dropdown.Item>
+                {!user && <Dropdown.Divider />}
                 {!user ? <Dropdown.Item onClick={handleSignIn}>Login</Dropdown.Item> : <Dropdown.Item><Link href="/donate">Donate</Link></Dropdown.Item>}
                 {!user ? <Dropdown.Item onClick={handleSignIn}>Sign Up</Dropdown.Item> : <Dropdown.Item><Link href="/profile">Profile</Link></Dropdown.Item>}
+                {user && <Dropdown.Divider />}
                 {!user ? null : <Dropdown.Item onClick={handleSignOut}>Sign Out</Dropdown.Item>}
             </Dropdown>
 
